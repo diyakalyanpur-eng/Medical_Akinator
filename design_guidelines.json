@@ -1,0 +1,153 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Dr. Neuro",
+      "aesthetic": "Cyber-Medical Noir",
+      "description": "A fusion of high-stakes gaming and precise medical diagnostics. Think 'Cyberpunk 2077 meets House M.D.' Dark, mysterious, yet clinically precise.",
+      "principles": [
+        "Fusion: Gaming Neon + Medical Sterile",
+        "Emotion: Tension & Release (The 'Aha!' moment of diagnosis)",
+        "Depth: Glassmorphism and layered data",
+        "Focus: Centralized attention for the 'Interrogation' (Game) phase"
+      ]
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Rajdhani, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "imports": [
+        "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Rajdhani:wght@500;600;700&display=swap');"
+      ],
+      "scale": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tighter uppercase",
+        "h2": "text-3xl md:text-5xl font-semibold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-medium text-primary",
+        "body": "text-base md:text-lg leading-relaxed text-muted-foreground",
+        "caption": "text-xs font-mono tracking-widest uppercase text-muted-foreground/70"
+      }
+    },
+    "colors": {
+      "palette": {
+        "background": "#09090b",
+        "foreground": "#fafafa",
+        "primary": "#00f0ff",
+        "primary_foreground": "#000000",
+        "secondary": "#18181b",
+        "accent": "#7d00ff",
+        "success": "#00ff9d",
+        "warning": "#ffb700",
+        "error": "#ff0055",
+        "muted": "#27272a"
+      },
+      "gradients": {
+        "hero": "bg-gradient-to-b from-transparent via-primary/5 to-primary/10",
+        "card": "bg-gradient-to-br from-white/5 to-white/0",
+        "glow": "shadow-[0_0_30px_-5px_rgba(0,240,255,0.3)]"
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_-5px_rgba(0,240,255,0.5)] rounded-none skew-x-[-10deg] px-8 py-6 font-bold tracking-widest transition-all hover:skew-x-0",
+        "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-none border border-white/10 px-6 py-4 font-mono text-sm tracking-wider uppercase",
+        "ghost": "hover:bg-white/5 text-muted-foreground hover:text-foreground"
+      },
+      "cards": {
+        "glass": "bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-xl overflow-hidden",
+        "neon": "bg-black/80 border border-primary/50 shadow-[0_0_15px_-3px_rgba(0,240,255,0.2)] rounded-lg",
+        "interactive": "hover:border-primary/50 hover:shadow-[0_0_30px_-10px_rgba(0,240,255,0.3)] transition-all duration-300 cursor-pointer group"
+      },
+      "inputs": {
+        "default": "bg-secondary/50 border-white/10 focus:border-primary focus:ring-1 focus:ring-primary/50 rounded-md h-12 font-mono"
+      }
+    },
+    "layout_strategies": {
+      "marketing": {
+        "grid": "grid grid-cols-1 md:grid-cols-12 gap-8",
+        "hero": "col-span-full min-h-[80vh] flex flex-col justify-center items-center text-center relative overflow-hidden",
+        "features": "col-span-full grid grid-cols-1 md:grid-cols-3 gap-6"
+      },
+      "game_interface": {
+        "container": "max-w-4xl mx-auto min-h-screen flex flex-col justify-center p-6 relative z-10",
+        "question_card": "w-full max-w-2xl mx-auto aspect-[4/3] md:aspect-[16/9] flex flex-col justify-between p-8 md:p-12 relative",
+        "mascot_position": "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] object-cover opacity-20 z-0 pointer-events-none mix-blend-screen"
+      },
+      "dashboard": {
+        "grid": "grid grid-cols-1 md:grid-cols-4 gap-4 p-6",
+        "sidebar": "hidden md:flex flex-col w-64 border-r border-white/10 bg-black/50 backdrop-blur-md h-screen fixed left-0 top-0 z-50",
+        "content": "md:pl-64 w-full min-h-screen"
+      }
+    },
+    "assets": {
+      "images": [
+        {
+          "category": "mascot",
+          "url": "https://images.unsplash.com/photo-1654910971111-836ac0c213ae?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "description": "The 'Dr. Neuro' Avatar - Mysterious, masked, futuristic.",
+          "usage": "Game background overlay, Hero section main visual"
+        },
+        {
+          "category": "specialty_cardiology",
+          "url": "https://images.unsplash.com/photo-1543121955-8dfb9e9e255f?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "description": "Neon Heart Sign",
+          "usage": "Cardiology specialty card background"
+        },
+        {
+          "category": "specialty_neurology",
+          "url": "https://images.unsplash.com/photo-1761075666032-7540b8c58de7?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "description": "Abstract Neural Network",
+          "usage": "Neurology specialty card background"
+        },
+        {
+          "category": "background_texture",
+          "url": "https://images.unsplash.com/photo-1761767380566-7a86c3e653a3?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "description": "3D Glossy Capsules",
+          "usage": "Global app background texture (low opacity)"
+        },
+        {
+          "category": "background_abstract",
+          "url": "https://images.unsplash.com/photo-1733425999473-8a2ac086ec5b?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "description": "OLED Glossy Tape",
+          "usage": "Footer or header background texture"
+        }
+      ],
+      "icons": {
+        "library": "lucide-react",
+        "style": "Stroke width 1.5px, distinct and sharp"
+      }
+    },
+    "motion": {
+      "transitions": "transition-all duration-300 ease-out",
+      "hover_effects": "hover:-translate-y-1 hover:shadow-lg",
+      "page_enter": "animate-in fade-in slide-in-from-bottom-4 duration-700",
+      "game_reveal": "animate-in zoom-in-95 duration-500 ease-out"
+    }
+  },
+  "instructions_to_main_agent": {
+    "general": [
+      "Implement the 'Cyber-Medical Noir' aesthetic strictly.",
+      "Use the provided image URLs for the specific categories.",
+      "Ensure all text is legible against the dark backgrounds (WCAG AA).",
+      "Use 'Rajdhani' font for all headings to give that futuristic medical feel.",
+      "Keep the UI 'Gamified' - use progress bars, score counters, and sound effects (visual cues) metaphors."
+    ],
+    "pages": {
+      "landing": "Hero section must use the Mascot image as a mysterious background. Specialty cards should use the neon icons.",
+      "game": "The question interface should feel like an interrogation or a high-tech scan. Center the question. Use large buttons for Yes/No/Maybe.",
+      "results": "The diagnosis reveal should be dramatic. Use the 'success' or 'warning' colors heavily here."
+    },
+    "components": {
+      "shadcn": "Customize all Shadcn components to match the dark/neon theme. Remove default white backgrounds and replace with black/glass.",
+      "charts": "Use Recharts with the custom neon palette (Cyan, Violet, Green)."
+    }
+  },
+  "universal_guidelines": [
+    "Do not use gradients for text unless it's a very large headline.",
+    "Avoid 'Inter' for headings. Use the specified 'Rajdhani'.",
+    "Always add 'data-testid' to interactive elements.",
+    "Use 'sonner' for toasts.",
+    "Components must use named exports.",
+    "Pages must use default exports."
+  ]
+}
