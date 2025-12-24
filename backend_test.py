@@ -87,7 +87,7 @@ class DrNeuroAPITester:
     def test_health_check(self):
         """Test basic health/connectivity"""
         self.log("=== HEALTH CHECK ===")
-        return self.run_test("Health Check", "GET", "", 404)  # Root should return 404
+        return self.run_test("Health Check", "GET", "", 200)  # Root should return 200 with API message
 
     def test_specialties(self):
         """Test specialties endpoint"""
