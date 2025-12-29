@@ -926,5 +926,229 @@
       "setting": "outpatient_clinic or emergency_department"
     },
     "created_at": 1767000768.9943976
+  },
+  "game_2faba82b550e": {
+    "game_id": "game_2faba82b550e",
+    "disease_name": "Pleural Effusion",
+    "disease_data": {
+      "id": "j90_001",
+      "icd10_code": "J90",
+      "name": "Pleural Effusion",
+      "category": "Respiratory",
+      "difficulty": "medium",
+      "initial_presentation": {
+        "chief_complaint": "shortness of breath",
+        "setting": "outpatient_clinic or emergency_department",
+        "patient_demographics": {
+          "age_range": "40-70",
+          "sex": "equal",
+          "appearance": "appears mildly dyspneic, may lean toward affected side"
+        }
+      },
+      "history": {
+        "symptom_onset": {
+          "timing": "gradual over days to weeks",
+          "mode": "progressive",
+          "progression": "slowly worsening dyspnea"
+        },
+        "primary_symptoms": {
+          "dyspnea": "yes, progressive",
+          "chest_pain": "sometimes, pleuritic if inflammatory",
+          "cough": "yes, dry, non-productive",
+          "orthopnea": "sometimes, if large effusion"
+        },
+        "associated_symptoms": {
+          "fever": "if infectious (empyema, parapneumonic)",
+          "weight_loss": "if malignancy or TB",
+          "night_sweats": "if TB or lymphoma",
+          "leg_swelling": "if CHF"
+        },
+        "past_medical_history": {
+          "heart_failure": "most common cause",
+          "cirrhosis": "hepatic hydrothorax",
+          "renal_failure": "uremic effusion",
+          "malignancy": "lung, breast, lymphoma",
+          "pneumonia": "parapneumonic effusion",
+          "pulmonary_embolism": "sometimes"
+        },
+        "medications": [
+          "diuretics if CHF",
+          "variable based on underlying condition"
+        ],
+        "social_history": {
+          "smoking": "if malignancy",
+          "alcohol": "if cirrhosis",
+          "occupational_asbestos": "mesothelioma risk"
+        },
+        "family_history": {
+          "malignancy": "sometimes relevant"
+        }
+      },
+      "physical_exam": {
+        "vital_signs": {
+          "blood_pressure": "normal or variable",
+          "heart_rate": "90-100",
+          "respiratory_rate": "20-24",
+          "temperature": "37.0\u00b0C or elevated if infection",
+          "oxygen_saturation": "92-95%, depends on size"
+        },
+        "general": "comfortable at rest or mildly dyspneic",
+        "respiratory": {
+          "inspection": "decreased chest wall movement on affected side",
+          "palpation": "decreased tactile fremitus",
+          "percussion": "stony dullness at base",
+          "auscultation": "decreased or absent breath sounds, egophony above effusion"
+        },
+        "cardiovascular": {
+          "inspection": "JVD if CHF, no JVD if other causes",
+          "auscultation": "may have S3 if CHF"
+        },
+        "abdomen": "ascites if cirrhosis, hepatomegaly"
+      },
+      "diagnostic_tests": {
+        "must_order_for_diagnosis": [
+          "chest_xray",
+          "thoracentesis"
+        ],
+        "available_tests": {
+          "chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 30,
+            "result": "blunting of costophrenic angle, meniscus sign, if large: opacification of hemithorax",
+            "interpretation": "Confirms presence, requires 200mL to detect"
+          },
+          "ultrasound_chest": {
+            "cost_points": 2,
+            "time_minutes": 15,
+            "result": "anechoic or complex fluid collection",
+            "interpretation": "Guides thoracentesis, detects loculations"
+          },
+          "ct_chest": {
+            "cost_points": 5,
+            "time_minutes": 45,
+            "result": "fluid collection, identifies underlying lung pathology",
+            "interpretation": "Evaluates for malignancy, empyema"
+          },
+          "thoracentesis": {
+            "cost_points": 4,
+            "time_minutes": 30,
+            "result": "fluid obtained for analysis",
+            "interpretation": "Therapeutic and diagnostic"
+          },
+          "pleural_fluid_analysis": {
+            "cost_points": 5,
+            "time_minutes": 120,
+            "result": "protein, LDH, glucose, pH, cell count, cultures, cytology",
+            "interpretation": "Light's criteria: transudate vs exudate"
+          },
+          "bnp": {
+            "cost_points": 3,
+            "time_minutes": 30,
+            "result": "elevated if CHF",
+            "interpretation": "Helps identify cardiac cause"
+          }
+        }
+      },
+      "differential_diagnosis": {
+        "early_differential": [
+          "CHF (transudate)",
+          "Pneumonia (parapneumonic)",
+          "Malignancy",
+          "Pulmonary embolism",
+          "Cirrhosis"
+        ],
+        "discriminating_features": {
+          "CHF": [
+            "bilateral effusions",
+            "elevated BNP",
+            "JVD",
+            "S3 gallop",
+            "transudate"
+          ],
+          "Parapneumonic": [
+            "fever",
+            "pneumonia on CXR",
+            "exudate",
+            "elevated WBC in fluid"
+          ],
+          "Malignancy": [
+            "weight loss",
+            "bloody fluid",
+            "positive cytology",
+            "exudate"
+          ],
+          "Pulmonary embolism": [
+            "acute onset",
+            "pleuritic pain",
+            "risk factors",
+            "exudate"
+          ],
+          "Cirrhosis": [
+            "ascites",
+            "hepatomegaly",
+            "right-sided",
+            "transudate"
+          ]
+        }
+      },
+      "scoring_criteria": {
+        "essential_questions": [
+          "dyspnea progression",
+          "chest pain character",
+          "heart failure history",
+          "malignancy history",
+          "fever or weight loss"
+        ],
+        "essential_exams": [
+          "vital signs",
+          "respiratory examination",
+          "percussion for dullness",
+          "cardiovascular examination"
+        ],
+        "essential_tests": [
+          "chest_xray",
+          "thoracentesis",
+          "pleural_fluid_analysis"
+        ],
+        "optimal_question_count": 10,
+        "optimal_test_count": 3
+      },
+      "teaching_points": [
+        "Light's criteria distinguishes transudate from exudate",
+        "Transudate: CHF, cirrhosis, nephrotic syndrome (treat underlying cause)",
+        "Exudate: infection, malignancy, PE (requires further workup)",
+        "Thoracentesis indicated if >1cm on lateral decubitus film or unknown etiology",
+        "Complicated parapneumonic effusion requires chest tube drainage"
+      ],
+      "key_features": [
+        "Progressive dyspnea",
+        "Dullness to percussion at lung base",
+        "Decreased breath sounds",
+        "Blunted costophrenic angle on chest X-ray",
+        "Fluid confirmed by thoracentesis"
+      ],
+      "related_conditions": [
+        "Heart failure",
+        "Pneumonia",
+        "Malignancy",
+        "Cirrhosis",
+        "Empyema"
+      ]
+    },
+    "questions_asked": [],
+    "differential_diagnosis": [],
+    "differential_history": [],
+    "patient_presentation": {
+      "text": "A 55-year-old M patient presents to outpatient clinic or emergency department with shortness of breath. The patient appears mildly dyspneic, may lean toward affected side.",
+      "age": "55",
+      "sex": "M",
+      "setting": "outpatient_clinic or emergency_department"
+    },
+    "current_question": {
+      "question": "Does the patient have shortness of breath?",
+      "symptom_key": "dyspnea",
+      "number": 1
+    },
+    "created_at": 1767000946.7552536
   }
 }
