@@ -1,1 +1,240 @@
-{}
+{
+  "game_5d62c96337be": {
+    "game_id": "game_5d62c96337be",
+    "disease_name": "Bronchiectasis",
+    "disease_data": {
+      "id": "j47_001",
+      "icd10_code": "J47",
+      "name": "Bronchiectasis",
+      "category": "Respiratory",
+      "difficulty": "medium",
+      "initial_presentation": {
+        "chief_complaint": "chronic productive cough with recurrent infections",
+        "setting": "outpatient_clinic",
+        "patient_demographics": {
+          "age_range": "40-65",
+          "sex": "female slight predominance",
+          "appearance": "chronically ill, frequent coughing with sputum production"
+        }
+      },
+      "history": {
+        "symptom_onset": {
+          "timing": "chronic, years",
+          "mode": "gradually progressive",
+          "progression": "slowly worsening with exacerbations"
+        },
+        "primary_symptoms": {
+          "chronic_productive_cough": "yes, hallmark symptom",
+          "sputum_volume": "copious, daily >30mL",
+          "sputum_character": "purulent, mucoid, may be blood-tinged",
+          "hemoptysis": "yes, recurrent, sometimes massive",
+          "dyspnea": "yes, progressive",
+          "recurrent_respiratory_infections": "yes, 3-4 per year"
+        },
+        "associated_symptoms": {
+          "wheezing": "sometimes",
+          "chest_pain": "sometimes, pleuritic",
+          "fever": "during exacerbations",
+          "weight_loss": "sometimes",
+          "fatigue": "yes"
+        },
+        "underlying_causes": {
+          "childhood_infection": "pertussis, measles, severe pneumonia",
+          "cystic_fibrosis": "if young onset",
+          "immunodeficiency": "antibody deficiency",
+          "primary_ciliary_dyskinesia": "Kartagener syndrome",
+          "allergic_bronchopulmonary_aspergillosis": "ABPA",
+          "chronic_aspiration": "yes",
+          "post_tb": "yes"
+        },
+        "past_medical_history": {
+          "recurrent_pneumonia": "yes",
+          "chronic_sinusitis": "sometimes",
+          "asthma": "sometimes",
+          "copd": "sometimes"
+        },
+        "medications": [
+          "antibiotics frequently",
+          "inhaled_bronchodilators",
+          "mucolytics",
+          "chest_physiotherapy"
+        ],
+        "social_history": {
+          "smoking": "sometimes",
+          "occupational_exposure": "variable"
+        },
+        "family_history": {
+          "cystic_fibrosis": "if genetic",
+          "immunodeficiency": "sometimes"
+        }
+      },
+      "physical_exam": {
+        "vital_signs": {
+          "blood_pressure": "normal",
+          "heart_rate": "85-95",
+          "respiratory_rate": "18-22",
+          "temperature": "37.0\u00b0C or elevated if infected",
+          "oxygen_saturation": "93-96% or lower if advanced"
+        },
+        "general": "chronically ill appearing, frequent productive cough",
+        "respiratory": {
+          "inspection": "increased AP diameter sometimes",
+          "palpation": "normal",
+          "percussion": "normal",
+          "auscultation": "coarse crackles at bases, rhonchi, squeaks, wheezes"
+        },
+        "cardiovascular": {
+          "auscultation": "may have loud P2 if cor pulmonale"
+        },
+        "digits": "clubbing present in 30%"
+      },
+      "diagnostic_tests": {
+        "must_order_for_diagnosis": [
+          "ct_chest_hrct"
+        ],
+        "available_tests": {
+          "hrct_chest": {
+            "cost_points": 5,
+            "time_minutes": 45,
+            "result": "bronchial dilation >1.5x adjacent artery, lack of bronchial tapering, signet ring sign",
+            "interpretation": "Gold standard for diagnosis"
+          },
+          "chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 30,
+            "result": "increased markings, tramlines, ring shadows, may be normal",
+            "interpretation": "Insensitive, CT required"
+          },
+          "sputum_culture": {
+            "cost_points": 2,
+            "time_minutes": 120,
+            "result": "Pseudomonas, H. influenzae, S. pneumoniae, NTM (non-tuberculous mycobacteria)",
+            "interpretation": "Guides antibiotic therapy"
+          },
+          "spirometry": {
+            "cost_points": 2,
+            "time_minutes": 20,
+            "result": "obstructive pattern, sometimes mixed",
+            "interpretation": "Assesses airflow limitation"
+          },
+          "immunoglobulin_levels": {
+            "cost_points": 3,
+            "time_minutes": 120,
+            "result": "low IgG, IgA, or IgM if immunodeficiency",
+            "interpretation": "Screens for underlying immune defect"
+          },
+          "sweat_chloride_test": {
+            "cost_points": 2,
+            "time_minutes": 60,
+            "result": "elevated if cystic fibrosis",
+            "interpretation": "Screens for CF"
+          },
+          "alpha1_antitrypsin": {
+            "cost_points": 3,
+            "time_minutes": 120,
+            "result": "low if deficiency",
+            "interpretation": "Screens for genetic cause"
+          }
+        }
+      },
+      "differential_diagnosis": {
+        "early_differential": [
+          "Bronchiectasis",
+          "COPD",
+          "Chronic bronchitis",
+          "Tuberculosis",
+          "Cystic fibrosis"
+        ],
+        "discriminating_features": {
+          "Bronchiectasis": [
+            "copious purulent sputum",
+            "recurrent infections",
+            "hemoptysis",
+            "bronchial dilation on CT"
+          ],
+          "COPD": [
+            "smoking history",
+            "progressive dyspnea",
+            "emphysema on CT",
+            "less sputum production"
+          ],
+          "Chronic bronchitis": [
+            "productive cough 3 months/year for 2 years",
+            "smoking",
+            "no bronchial dilation"
+          ],
+          "Tuberculosis": [
+            "upper lobe cavitation",
+            "AFB positive",
+            "systemic symptoms"
+          ],
+          "Cystic fibrosis": [
+            "young age",
+            "pancreatic insufficiency",
+            "positive sweat test",
+            "genetic"
+          ]
+        }
+      },
+      "scoring_criteria": {
+        "essential_questions": [
+          "chronic productive cough duration",
+          "sputum volume and character",
+          "hemoptysis",
+          "recurrent infections",
+          "underlying causes"
+        ],
+        "essential_exams": [
+          "vital signs",
+          "respiratory examination",
+          "clubbing",
+          "oxygen saturation"
+        ],
+        "essential_tests": [
+          "HRCT_chest",
+          "sputum_culture",
+          "spirometry",
+          "immunoglobulin_levels"
+        ],
+        "optimal_question_count": 12,
+        "optimal_test_count": 4
+      },
+      "teaching_points": [
+        "HRCT with bronchial dilation >1.5x adjacent artery is diagnostic",
+        "Signet ring sign: dilated bronchus next to pulmonary artery",
+        "Treatment: airway clearance, antibiotics for exacerbations, treat underlying cause",
+        "Pseudomonas colonization indicates more severe disease",
+        "Massive hemoptysis may require bronchial artery embolization"
+      ],
+      "key_features": [
+        "Chronic productive cough with copious sputum",
+        "Recurrent respiratory infections",
+        "Hemoptysis",
+        "Bronchial dilation on HRCT",
+        "Coarse crackles and clubbing"
+      ],
+      "related_conditions": [
+        "Cystic fibrosis",
+        "COPD",
+        "Tuberculosis",
+        "Immunodeficiency",
+        "Primary ciliary dyskinesia"
+      ]
+    },
+    "questions_asked": [],
+    "differential_diagnosis": [],
+    "differential_history": [],
+    "patient_presentation": {
+      "text": "A 52-year-old F patient presents to the outpatient clinic with chronic productive cough with recurrent infections. The patient chronically ill, frequent coughing with sputum production.",
+      "age": "52",
+      "sex": "F",
+      "setting": "outpatient_clinic"
+    },
+    "current_question": {
+      "question": "Does the patient have chronic productive cough?",
+      "symptom_key": "chronic_productive_cough",
+      "number": 1
+    },
+    "created_at": 1767000561.0125856
+  }
+}
