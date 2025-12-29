@@ -1385,5 +1385,214 @@
       "setting": "outpatient_clinic"
     },
     "created_at": 1767001244.1380672
+  },
+  "5d50ad44-aff8-4d80-be2d-ee07582b8ade": {
+    "session_id": "5d50ad44-aff8-4d80-be2d-ee07582b8ade",
+    "disease_name": "Spontaneous Pneumothorax",
+    "disease_data": {
+      "id": "j93_001",
+      "icd10_code": "J93",
+      "name": "Spontaneous Pneumothorax",
+      "category": "Respiratory",
+      "difficulty": "medium",
+      "initial_presentation": {
+        "chief_complaint": "sudden onset chest pain and shortness of breath",
+        "setting": "emergency_department",
+        "patient_demographics": {
+          "age_range": "20-40 for primary spontaneous, any age for secondary",
+          "sex": "male predominant (6:1 for primary)",
+          "appearance": "appears anxious, tachypneic, tall thin habitus if primary"
+        }
+      },
+      "history": {
+        "symptom_onset": {
+          "timing": "sudden, 1-3 hours ago",
+          "mode": "acute",
+          "progression": "persistent or worsening"
+        },
+        "primary_symptoms": {
+          "chest_pain": "yes",
+          "pain_character": "sharp, pleuritic",
+          "pain_location": "ipsilateral to pneumothorax",
+          "dyspnea": "yes, severity proportional to size",
+          "cough": "sometimes, dry"
+        },
+        "precipitating_factors": {
+          "at_rest": "yes, classic",
+          "exertion": "sometimes",
+          "valsalva": "sometimes",
+          "trauma": "if traumatic pneumothorax",
+          "mechanical_ventilation": "if iatrogenic"
+        },
+        "past_medical_history": {
+          "previous_pneumothorax": "high recurrence rate, 30-50%",
+          "underlying_lung_disease": "COPD, cystic fibrosis, asthma for secondary",
+          "marfan_syndrome": "sometimes",
+          "ehlers_danlos": "rarely"
+        },
+        "medications": [
+          "none usually"
+        ],
+        "social_history": {
+          "smoking": "strong risk factor",
+          "tall_thin_habitus": "yes, for primary spontaneous",
+          "scuba_diving": "risk factor",
+          "flying": "recent air travel sometimes"
+        },
+        "family_history": {
+          "pneumothorax": "sometimes familial"
+        }
+      },
+      "physical_exam": {
+        "vital_signs": {
+          "blood_pressure": "normal or decreased if tension PTX",
+          "heart_rate": "100-120, tachycardic",
+          "respiratory_rate": "24-30, tachypneic",
+          "temperature": "37.0\u00b0C (98.6\u00b0F)",
+          "oxygen_saturation": "variable, 88-95% depending on size"
+        },
+        "general": "anxious, tachypneic, sitting upright, leaning toward affected side",
+        "respiratory": {
+          "inspection": "decreased chest wall movement on affected side, tracheal deviation away from affected side if tension",
+          "palpation": "decreased tactile fremitus on affected side",
+          "percussion": "hyperresonant on affected side",
+          "auscultation": "decreased or absent breath sounds on affected side"
+        },
+        "cardiovascular": {
+          "inspection": "JVD if tension pneumothorax",
+          "auscultation": "tachycardic, may be muffled if large"
+        },
+        "signs_of_tension": "tracheal deviation, JVD, hypotension, absent breath sounds - medical emergency"
+      },
+      "diagnostic_tests": {
+        "must_order_for_diagnosis": [
+          "chest_xray"
+        ],
+        "available_tests": {
+          "chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 15,
+            "result": "visceral pleural line separated from chest wall, absent lung markings peripherally",
+            "interpretation": "Confirms pneumothorax, estimates size"
+          },
+          "expiratory_chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 20,
+            "result": "more apparent pleural line on expiration",
+            "interpretation": "Increases sensitivity for small PTX"
+          },
+          "ct_chest": {
+            "cost_points": 5,
+            "time_minutes": 30,
+            "result": "clearly defines pneumothorax and any underlying blebs/bullae",
+            "interpretation": "Gold standard, detects occult PTX, identifies blebs"
+          },
+          "ultrasound": {
+            "cost_points": 2,
+            "time_minutes": 10,
+            "result": "absence of lung sliding, absent comet-tail artifacts",
+            "interpretation": "Bedside diagnosis, useful in trauma"
+          },
+          "abg": {
+            "cost_points": 2,
+            "time_minutes": 15,
+            "result": "hypoxemia, A-a gradient increased",
+            "interpretation": "Assesses severity"
+          }
+        }
+      },
+      "differential_diagnosis": {
+        "early_differential": [
+          "Spontaneous pneumothorax",
+          "Pulmonary embolism",
+          "Acute MI",
+          "Pneumonia",
+          "Musculoskeletal chest pain"
+        ],
+        "discriminating_features": {
+          "Pneumothorax": [
+            "sudden pleuritic pain",
+            "decreased breath sounds",
+            "hyperresonance",
+            "CXR findings"
+          ],
+          "Pulmonary embolism": [
+            "risk factors for DVT",
+            "hemoptysis",
+            "normal percussion",
+            "D-dimer elevated"
+          ],
+          "Acute MI": [
+            "crushing substernal pain",
+            "radiation",
+            "cardiac enzymes elevated",
+            "ECG changes"
+          ],
+          "Pneumonia": [
+            "fever",
+            "productive cough",
+            "crackles",
+            "infiltrate on CXR"
+          ],
+          "Musculoskeletal": [
+            "reproducible with palpation",
+            "no dyspnea",
+            "normal lung exam"
+          ]
+        }
+      },
+      "scoring_criteria": {
+        "essential_questions": [
+          "onset and character of pain",
+          "dyspnea severity",
+          "previous episodes",
+          "underlying lung disease",
+          "trauma or procedures"
+        ],
+        "essential_exams": [
+          "vital signs",
+          "respiratory examination",
+          "tracheal position",
+          "signs of tension"
+        ],
+        "essential_tests": [
+          "chest_xray",
+          "oxygen_saturation"
+        ],
+        "optimal_question_count": 10,
+        "optimal_test_count": 2
+      },
+      "teaching_points": [
+        "Tension pneumothorax is clinical diagnosis - needle decompression before imaging",
+        "Primary spontaneous PTX occurs in tall thin young males at rest",
+        "Pneumothorax >2cm or symptomatic requires intervention (aspiration or chest tube)",
+        "Recurrence rate 30-50% after first episode, higher with subsequent episodes",
+        "Avoid flying or scuba diving for 2 weeks after resolution"
+      ],
+      "key_features": [
+        "Sudden onset pleuritic chest pain",
+        "Dyspnea",
+        "Decreased breath sounds on affected side",
+        "Hyperresonance to percussion",
+        "Visceral pleural line on chest X-ray"
+      ],
+      "related_conditions": [
+        "Pulmonary embolism",
+        "Acute MI",
+        "Rib fracture",
+        "Pneumonia",
+        "COPD with bullae"
+      ]
+    },
+    "questions_asked": [],
+    "differential_diagnosis": [],
+    "differential_history": [],
+    "patient_presentation": {
+      "text": "A 35-year-old M patient presents to the emergency department with sudden onset chest pain and shortness of breath. The patient appears anxious, tachypneic, tall thin habitus if primary.",
+      "age": "35",
+      "sex": "M",
+      "setting": "emergency_department"
+    },
+    "created_at": 1767001265.0293603
   }
 }
