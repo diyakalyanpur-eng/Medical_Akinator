@@ -236,5 +236,233 @@
       "number": 1
     },
     "created_at": 1767000561.0125856
+  },
+  "game_835393b3b24f": {
+    "game_id": "game_835393b3b24f",
+    "disease_name": "Community-Acquired Pneumonia",
+    "disease_data": {
+      "id": "j18_001",
+      "icd10_code": "J18",
+      "name": "Community-Acquired Pneumonia",
+      "category": "Respiratory",
+      "difficulty": "easy",
+      "initial_presentation": {
+        "chief_complaint": "cough and fever",
+        "setting": "emergency_department",
+        "patient_demographics": {
+          "age_range": "35-75",
+          "sex": "equal",
+          "appearance": "appears ill, tachypneic"
+        }
+      },
+      "history": {
+        "symptom_onset": {
+          "timing": "3 days ago",
+          "mode": "gradual",
+          "progression": "worsening"
+        },
+        "primary_symptoms": {
+          "cough": "yes",
+          "cough_type": "productive",
+          "sputum_color": "yellow-green, sometimes blood-tinged",
+          "fever": "yes",
+          "fever_pattern": "high grade, chills and rigors",
+          "dyspnea": "yes",
+          "chest_pain": "yes, pleuritic"
+        },
+        "associated_symptoms": {
+          "fatigue": "yes",
+          "night_sweats": "sometimes",
+          "weight_loss": "no",
+          "hemoptysis": "sometimes"
+        },
+        "past_medical_history": {
+          "copd": "sometimes",
+          "asthma": "sometimes",
+          "diabetes": "sometimes",
+          "immunosuppression": "sometimes",
+          "recent_viral_illness": "sometimes"
+        },
+        "medications": [
+          "none specific"
+        ],
+        "social_history": {
+          "smoking": "sometimes, 20+ pack years",
+          "alcohol": "variable",
+          "living_situation": "independent"
+        },
+        "family_history": {
+          "respiratory_disease": "non-contributory"
+        }
+      },
+      "physical_exam": {
+        "vital_signs": {
+          "blood_pressure": "110/70",
+          "heart_rate": "105",
+          "respiratory_rate": "24",
+          "temperature": "39.2\u00b0C (102.5\u00b0F)",
+          "oxygen_saturation": "92% on room air"
+        },
+        "general": "ill-appearing, tachypneic",
+        "respiratory": {
+          "inspection": "increased work of breathing",
+          "palpation": "increased tactile fremitus over affected area",
+          "percussion": "dullness to percussion over consolidation",
+          "auscultation": "crackles, bronchial breath sounds, egophony"
+        },
+        "cardiovascular": {
+          "inspection": "JVP normal",
+          "auscultation": "tachycardic, regular, no murmurs"
+        },
+        "other_systems": "within normal limits"
+      },
+      "diagnostic_tests": {
+        "must_order_for_diagnosis": [
+          "chest_xray",
+          "sputum_culture"
+        ],
+        "available_tests": {
+          "chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 30,
+            "result": "lobar consolidation in right lower lobe with air bronchograms",
+            "interpretation": "Consistent with bacterial pneumonia"
+          },
+          "sputum_culture": {
+            "cost_points": 2,
+            "time_minutes": 120,
+            "result": "Streptococcus pneumoniae isolated",
+            "interpretation": "Typical bacterial pathogen"
+          },
+          "cbc": {
+            "cost_points": 1,
+            "time_minutes": 30,
+            "result": "WBC 16,000 with left shift, neutrophilia",
+            "interpretation": "Bacterial infection"
+          },
+          "bmp": {
+            "cost_points": 1,
+            "time_minutes": 30,
+            "result": "mild dehydration, otherwise normal",
+            "interpretation": "Volume depletion"
+          },
+          "blood_culture": {
+            "cost_points": 2,
+            "time_minutes": 180,
+            "result": "positive for Streptococcus pneumoniae in 20% of cases",
+            "interpretation": "Bacteremia if positive"
+          },
+          "procalcitonin": {
+            "cost_points": 3,
+            "time_minutes": 45,
+            "result": "elevated (>0.5 ng/mL)",
+            "interpretation": "Suggests bacterial etiology"
+          },
+          "abg": {
+            "cost_points": 2,
+            "time_minutes": 15,
+            "result": "hypoxemia with A-a gradient",
+            "interpretation": "V/Q mismatch from consolidation"
+          }
+        }
+      },
+      "differential_diagnosis": {
+        "early_differential": [
+          "Community-acquired pneumonia",
+          "Bronchitis",
+          "Tuberculosis",
+          "Pulmonary embolism",
+          "Lung cancer"
+        ],
+        "discriminating_features": {
+          "Pneumonia": [
+            "consolidation on CXR",
+            "productive cough",
+            "fever",
+            "elevated WBC"
+          ],
+          "Bronchitis": [
+            "no infiltrate on CXR",
+            "viral prodrome",
+            "clear lungs"
+          ],
+          "Tuberculosis": [
+            "chronic course",
+            "night sweats",
+            "weight loss",
+            "upper lobe cavitation"
+          ],
+          "Pulmonary embolism": [
+            "sudden onset",
+            "pleuritic pain",
+            "risk factors for DVT",
+            "no fever"
+          ],
+          "Lung cancer": [
+            "chronic cough",
+            "weight loss",
+            "smoking history",
+            "mass on imaging"
+          ]
+        }
+      },
+      "scoring_criteria": {
+        "essential_questions": [
+          "cough characteristics",
+          "fever and chills",
+          "dyspnea",
+          "chest pain",
+          "sputum production"
+        ],
+        "essential_exams": [
+          "vital signs",
+          "respiratory examination",
+          "oxygen saturation"
+        ],
+        "essential_tests": [
+          "chest_xray",
+          "CBC",
+          "sputum_culture"
+        ],
+        "optimal_question_count": 12,
+        "optimal_test_count": 4
+      },
+      "teaching_points": [
+        "CURB-65 score determines outpatient vs inpatient management",
+        "Streptococcus pneumoniae is most common cause of CAP",
+        "Empiric antibiotics should cover typical and atypical pathogens",
+        "Chest X-ray may lag clinical improvement by several days",
+        "Parapneumonic effusion requires thoracentesis if moderate or large"
+      ],
+      "key_features": [
+        "Acute onset of cough, fever, and dyspnea",
+        "Lobar consolidation on chest X-ray",
+        "Productive cough with purulent sputum",
+        "Crackles and bronchial breath sounds on examination",
+        "Elevated WBC with left shift"
+      ],
+      "related_conditions": [
+        "Bronchitis",
+        "Tuberculosis",
+        "Pulmonary embolism",
+        "Lung abscess",
+        "Empyema"
+      ]
+    },
+    "questions_asked": [],
+    "differential_diagnosis": [],
+    "differential_history": [],
+    "patient_presentation": {
+      "text": "A 55-year-old M patient presents to the emergency department with cough and fever. The patient appears ill, tachypneic.",
+      "age": "55",
+      "sex": "M",
+      "setting": "emergency_department"
+    },
+    "current_question": {
+      "question": "Is the patient coughing?",
+      "symptom_key": "cough",
+      "number": 1
+    },
+    "created_at": 1767000589.1301973
   }
 }
