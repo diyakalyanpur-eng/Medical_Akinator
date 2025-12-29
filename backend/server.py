@@ -101,23 +101,17 @@ async def lifespan(app: FastAPI):
 # Create app with lifespan
 app = FastAPI(title="Disease Akinator API", lifespan=lifespan)
 
-# CORS middleware - configured for local development
+# Add custom CORS handler first (handles OPTIONS preflight)
+app.add_middleware(CORSHandler)
+
+# Also add standard CORS middleware for additional coverage
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-        "*"  # Allow all origins for flexibility
-    ],
-    allow_credentials=False,  # Set to False when using "*" origins
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
-    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # ==================== PYDANTIC MODELS ====================
