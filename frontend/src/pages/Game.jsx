@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../App';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { Switch } from '../components/ui/switch';
-import { Label } from '../components/ui/label';
-import { Heart, Brain, Wind, Utensils, Activity, Droplet, Bone, Bug, Scan, BrainCircuit, ArrowLeft, Play, Lock, Unlock, Loader2 } from 'lucide-react';
+import { Stethoscope, ArrowLeft, Play, Loader2, Activity, Heart, Brain, Wind, Droplet } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 
@@ -13,38 +10,30 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const SPECIALTY_ICONS = {
+  respiratory: Wind,
+  infectious: Activity,
   cardiology: Heart,
   neurology: Brain,
-  pulmonology: Wind,
-  gastroenterology: Utensils,
-  endocrinology: Activity,
-  nephrology: Droplet,
-  rheumatology: Bone,
-  infectious_disease: Bug,
-  dermatology: Scan,
-  psychiatry: BrainCircuit
+  general: Activity,
+  cardiovascular: Heart,
+  gastrointestinal: Droplet,
 };
 
 const SPECIALTY_COLORS = {
+  respiratory: '#00f0ff',
+  infectious: '#38b000',
   cardiology: '#ff0055',
   neurology: '#7d00ff',
-  pulmonology: '#00f0ff',
-  gastroenterology: '#ffb700',
-  endocrinology: '#00ff9d',
-  nephrology: '#ff6b35',
-  rheumatology: '#9d4edd',
-  infectious_disease: '#38b000',
-  dermatology: '#fb8500',
-  psychiatry: '#8338ec'
+  general: '#ffb700',
+  cardiovascular: '#ff0055',
+  gastrointestinal: '#ffb700',
 };
 
 export default function Game() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, token } = useAuth();
   const [specialties, setSpecialties] = useState([]);
   const [selectedSpecialty, setSelectedSpecialty] = useState(searchParams.get('specialty') || null);
-  const [isAnonymous, setIsAnonymous] = useState(!user);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
 
@@ -56,6 +45,10 @@ export default function Game() {
     try {
       const response = await axios.get(`${API}/specialties`);
       setSpecialties(response.data);
+      // Auto-select if only one or if specialty in URL
+      if (response.data.length === 1) {
+        setSelectedSpecialty(response.data[0][0]);
+      }
     } catch (error) {
       console.error('Error fetching specialties:', error);
       toast.error('Failed to load specialties');
@@ -65,26 +58,17 @@ export default function Game() {
   };
 
   const startGame = async () => {
-    if (!selectedSpecialty) {
-      toast.error('Please select a specialty');
-      return;
-    }
-
+    const specialtyToUse = selectedSpecialty || 'general';
+    
     setStarting(true);
     try {
-      const headers = {};
-      if (token && !isAnonymous) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await axios.post(
-        `${API}/game/start`,
-        { specialty: selectedSpecialty, is_anonymous: isAnonymous },
-        { headers, withCredentials: true }
-      );
+      const response = await axios.post(`${API}/game/start`, { 
+        specialty: specialtyToUse, 
+        is_anonymous: true 
+      });
 
       navigate(`/play/${response.data.game_id}`, { 
-        state: { gameData: response.data, isAnonymous } 
+        state: { gameData: response.data } 
       });
     } catch (error) {
       console.error('Error starting game:', error);
@@ -113,57 +97,35 @@ export default function Game() {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
         </Button>
-        
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            {isAnonymous ? (
-              <Lock className="w-4 h-4 text-white/40" />
-            ) : (
-              <Unlock className="w-4 h-4 text-[#00ff9d]" />
-            )}
-            <Label htmlFor="anonymous-mode" className="text-white/70 text-sm">
-              {isAnonymous ? 'Anonymous Mode' : 'Full Access'}
-            </Label>
-            <Switch
-              id="anonymous-mode"
-              checked={!isAnonymous}
-              onCheckedChange={(checked) => setIsAnonymous(!checked)}
-              disabled={!user}
-              data-testid="anonymous-toggle"
-            />
-          </div>
-        </div>
       </header>
 
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-8">
         <div className="text-center mb-12 animate-slide-up">
           <h1 className="text-4xl md:text-5xl font-bold text-white font-['Rajdhani'] tracking-tight uppercase mb-4">
-            Select Your <span className="text-gradient">Specialty</span>
+            Select <span className="text-gradient">Specialty</span>
           </h1>
           <p className="text-white/50 max-w-xl mx-auto">
-            Choose a medical specialty to begin your diagnostic challenge. 
-            Each specialty contains unique diseases and symptom patterns.
+            Choose a medical specialty to begin. Each specialty contains diseases with 
+            detailed patient presentations and symptom patterns.
           </p>
-          
-          {!user && (
-            <div className="mt-4 p-4 glass rounded-lg inline-block">
-              <p className="text-white/60 text-sm">
-                <Lock className="w-4 h-4 inline mr-2" />
-                <span className="text-[#00f0ff]">Sign in</span> to track progress and access the leaderboard
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Specialty Grid */}
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {[...Array(10)].map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
               <div key={i} className="h-40 bg-white/5 rounded-xl animate-pulse" />
             ))}
           </div>
+        ) : specialties.length === 0 ? (
+          <Card className="glass p-12 text-center mb-8">
+            <Stethoscope className="w-16 h-16 text-white/20 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">No Diseases Available</h3>
+            <p className="text-white/50 mb-4">Please add your diseases.json file to continue.</p>
+            <p className="text-white/30 text-sm font-mono">Path: /app/backend/data/diseases.json</p>
+          </Card>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
             {specialties.map(([key, specialty]) => {
               const Icon = SPECIALTY_ICONS[key] || Activity;
               const color = SPECIALTY_COLORS[key] || '#00f0ff';
@@ -193,8 +155,8 @@ export default function Game() {
                   <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-1">
                     {specialty.name}
                   </h3>
-                  <p className="text-white/40 text-sm line-clamp-2">
-                    {specialty.description}
+                  <p className="text-white/40 text-sm">
+                    {specialty.disease_count} disease{specialty.disease_count !== 1 ? 's' : ''}
                   </p>
                   
                   {isSelected && (
@@ -215,15 +177,17 @@ export default function Game() {
             <div className="text-center md:text-left">
               <h2 className="text-2xl font-bold text-white font-['Rajdhani'] mb-2">
                 {selectedSpecialtyData ? (
-                  <>Ready to diagnose in <span style={{ color: SPECIALTY_COLORS[selectedSpecialty] }}>{selectedSpecialtyData.name}</span>?</>
+                  <>Ready to diagnose in <span style={{ color: SPECIALTY_COLORS[selectedSpecialty] || '#00f0ff' }}>{selectedSpecialtyData.name}</span>?</>
+                ) : specialties.length > 0 ? (
+                  'Select a specialty or start with random'
                 ) : (
-                  'Select a specialty to begin'
+                  'Add diseases.json to begin'
                 )}
               </h2>
               <p className="text-white/50">
-                {selectedSpecialtyData 
-                  ? 'Answer up to 10 questions to reach the diagnosis'
-                  : 'Choose from 10 medical specialties above'
+                {specialties.length > 0 
+                  ? 'A random disease will be selected. Answer up to 10 questions to reach the diagnosis.'
+                  : 'No diseases available in the database'
                 }
               </p>
               
@@ -234,18 +198,18 @@ export default function Game() {
                 </div>
                 <div className="flex items-center gap-2 text-white/40">
                   <div className="w-2 h-2 rounded-full bg-[#7d00ff]" />
-                  <span className="font-mono">AI Hints Available</span>
+                  <span className="font-mono">Patient Context</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/40">
                   <div className="w-2 h-2 rounded-full bg-[#00ff9d]" />
-                  <span className="font-mono">Score Points</span>
+                  <span className="font-mono">Teaching Points</span>
                 </div>
               </div>
             </div>
             
             <Button
               className="bg-[#00f0ff] text-black font-bold text-lg px-8 py-6 hover:bg-[#00f0ff]/90 disabled:opacity-50 min-w-[200px]"
-              disabled={!selectedSpecialty || starting}
+              disabled={specialties.length === 0 || starting}
               onClick={startGame}
               data-testid="start-game-btn"
             >

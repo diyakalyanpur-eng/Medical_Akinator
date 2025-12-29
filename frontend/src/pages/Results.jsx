@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { useAuth } from '../App';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { Trophy, Target, BookOpen, ArrowRight, RotateCcw, Home, Loader2, Share2, Sparkles } from 'lucide-react';
+import { Trophy, Target, BookOpen, RotateCcw, Home, Loader2, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
-import axios from 'axios';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 export default function Results() {
   const navigate = useNavigate();
   const { gameId } = useParams();
   const location = useLocation();
-  const { user } = useAuth();
   
   const [result] = useState(location.state?.result || null);
   const [specialty] = useState(location.state?.specialty || null);
-  const [isAnonymous] = useState(location.state?.isAnonymous ?? true);
-  const [education, setEducation] = useState(null);
-  const [loadingEducation, setLoadingEducation] = useState(false);
 
   useEffect(() => {
     if (!result) {
@@ -28,25 +19,13 @@ export default function Results() {
     }
   }, [result, navigate]);
 
-  const fetchDetailedEducation = async () => {
-    setLoadingEducation(true);
-    try {
-      const response = await axios.get(`${API}/game/${gameId}/education`);
-      setEducation(response.data);
-    } catch (error) {
-      console.error('Error fetching education:', error);
-      toast.error('Failed to load educational content');
-    } finally {
-      setLoadingEducation(false);
-    }
-  };
-
   const shareResult = () => {
-    const text = `I just diagnosed ${result.diagnosis.name} (${result.diagnosis.icd_code}) in Dr. Neuro with a ${result.diagnosis.probability}% confidence! Can you beat my score of ${result.score} points?`;
+    const diagnosis = result.diagnosis || {};
+    const text = `I just diagnosed ${diagnosis.name || result.disease_name} (ICD: ${diagnosis.icd_code}) in Disease Akinator with a ${diagnosis.probability || result.score}% score! Can you beat that?`;
     
     if (navigator.share) {
       navigator.share({
-        title: 'Dr. Neuro - Medical Diagnosis Game',
+        title: 'Disease Akinator - Medical Diagnosis Game',
         text,
         url: window.location.origin
       });
@@ -64,8 +43,14 @@ export default function Results() {
     );
   }
 
-  const diagnosis = result.diagnosis;
-  const isHighConfidence = diagnosis.probability >= 70;
+  const diagnosis = result.diagnosis || {
+    name: result.disease_name,
+    icd_code: 'Unknown',
+    probability: result.score,
+    education: []
+  };
+  
+  const isHighConfidence = (diagnosis.probability || result.score) >= 70;
 
   return (
     <div className="min-h-screen bg-[#09090b] relative overflow-hidden">
@@ -115,7 +100,7 @@ export default function Results() {
             {isHighConfidence ? 'Excellent Diagnosis!' : 'Diagnosis Complete'}
           </h1>
           <p className="text-white/50">
-            Reached in {result.questions_asked} question{result.questions_asked !== 1 ? 's' : ''}
+            Reached in {result.questions_used} question{result.questions_used !== 1 ? 's' : ''}
           </p>
         </div>
 
@@ -123,7 +108,7 @@ export default function Results() {
         <Card className="glass p-8 mb-8 animate-slide-up">
           <div className="text-center mb-8">
             <span className="text-xs font-mono text-[#00f0ff] tracking-widest uppercase mb-2 block">
-              Primary Diagnosis
+              Final Diagnosis
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-white font-['Rajdhani'] mb-2">
               {diagnosis.name}
@@ -137,75 +122,39 @@ export default function Results() {
           {/* Confidence & Score */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div className="text-center p-6 bg-[#18181b]/50 rounded-xl">
-              <p className="text-white/50 text-sm font-mono uppercase tracking-wider mb-2">Confidence</p>
+              <p className="text-white/50 text-sm font-mono uppercase tracking-wider mb-2">Accuracy Score</p>
               <p className="text-4xl font-bold font-['Rajdhani']" style={{ 
                 color: isHighConfidence ? '#00ff9d' : '#ffb700' 
               }}>
-                {diagnosis.probability}%
+                {diagnosis.probability || result.score}%
               </p>
             </div>
             <div className="text-center p-6 bg-[#18181b]/50 rounded-xl">
-              <p className="text-white/50 text-sm font-mono uppercase tracking-wider mb-2">Score</p>
+              <p className="text-white/50 text-sm font-mono uppercase tracking-wider mb-2">Questions Used</p>
               <p className="text-4xl font-bold text-[#00f0ff] font-['Rajdhani']">
-                {result.score}
+                {result.questions_used}
               </p>
             </div>
           </div>
 
-          {/* Quick Education */}
-          <div className="border-t border-white/10 pt-6">
-            <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-4 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-[#7d00ff]" />
-              Key Points
-            </h3>
-            <ul className="space-y-3">
-              {diagnosis.education?.slice(0, 5).map((point, index) => (
-                <li key={index} className="flex items-start gap-3 text-white/70">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#7d00ff] mt-2 flex-shrink-0" />
-                  <span>{point}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Card>
-
-        {/* AI Enhanced Education */}
-        {!education && (
-          <Card className="glass-card p-6 mb-8 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-5 h-5 text-[#7d00ff]" />
-                <div>
-                  <h3 className="text-white font-semibold">AI-Enhanced Education</h3>
-                  <p className="text-white/50 text-sm">Get detailed clinical insights powered by AI</p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                className="border-[#7d00ff]/50 text-[#7d00ff] hover:bg-[#7d00ff]/10"
-                onClick={fetchDetailedEducation}
-                disabled={loadingEducation}
-                data-testid="get-education-btn"
-              >
-                {loadingEducation ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  'Load More'
-                )}
-              </Button>
+          {/* Education / Teaching Points */}
+          {diagnosis.education && diagnosis.education.length > 0 && (
+            <div className="border-t border-white/10 pt-6">
+              <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-4 flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-[#7d00ff]" />
+                Teaching Points
+              </h3>
+              <ul className="space-y-3">
+                {diagnosis.education.slice(0, 5).map((point, index) => (
+                  <li key={index} className="flex items-start gap-3 text-white/70">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#7d00ff] mt-2 flex-shrink-0" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </Card>
-        )}
-
-        {education && (
-          <Card className="glass p-6 mb-8 animate-slide-up">
-            <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#7d00ff]" />
-              AI Clinical Summary
-            </h3>
-            <p className="text-white/70 leading-relaxed">{education.ai_summary}</p>
-          </Card>
-        )}
+          )}
+        </Card>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in">
@@ -238,23 +187,6 @@ export default function Results() {
             Home
           </Button>
         </div>
-
-        {/* Sign Up Prompt for Anonymous */}
-        {isAnonymous && !user && (
-          <Card className="glass-card p-6 mt-8 text-center animate-fade-in">
-            <p className="text-white/70 mb-4">
-              Create an account to save your progress and appear on the leaderboard!
-            </p>
-            <Button
-              className="bg-[#7d00ff] text-white hover:bg-[#7d00ff]/90"
-              onClick={() => navigate('/register')}
-              data-testid="signup-prompt-btn"
-            >
-              Create Account
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Card>
-        )}
       </main>
     </div>
   );

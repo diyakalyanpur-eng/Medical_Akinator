@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { useAuth } from '../App';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { Progress } from '../components/ui/progress';
-import { Brain, Lightbulb, ArrowRight, Loader2, HelpCircle, X, Check, Minus } from 'lucide-react';
+import { Stethoscope, Lightbulb, Loader2, HelpCircle, X, Check, Minus, User } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 
@@ -22,10 +20,8 @@ export default function GamePlay() {
   const navigate = useNavigate();
   const { gameId } = useParams();
   const location = useLocation();
-  const { token } = useAuth();
   
   const [gameData, setGameData] = useState(location.state?.gameData || null);
-  const [isAnonymous] = useState(location.state?.isAnonymous ?? true);
   const [loading, setLoading] = useState(false);
   const [hint, setHint] = useState(null);
   const [loadingHint, setLoadingHint] = useState(false);
@@ -34,7 +30,6 @@ export default function GamePlay() {
 
   useEffect(() => {
     if (!gameData) {
-      // Redirect back if no game data
       navigate('/game');
     }
   }, [gameData, navigate]);
@@ -45,28 +40,19 @@ export default function GamePlay() {
     setHint(null);
 
     try {
-      const headers = {};
-      if (token && !isAnonymous) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await axios.post(
-        `${API}/game/answer`,
-        { game_id: gameId, answer },
-        { headers, withCredentials: true }
-      );
+      const response = await axios.post(`${API}/game/answer`, { 
+        game_id: gameId, 
+        answer 
+      });
 
       if (response.data.game_completed) {
-        // Navigate to results
         navigate(`/results/${gameId}`, { 
           state: { 
             result: response.data, 
-            specialty: gameData.specialty,
-            isAnonymous 
+            specialty: gameData.specialty
           } 
         });
       } else {
-        // Update game state
         setGameData(prev => ({
           ...prev,
           question_number: response.data.question_number,
@@ -105,37 +91,26 @@ export default function GamePlay() {
     );
   }
 
-  const progress = ((gameData.question_number || 1) / (gameData.total_questions || 10)) * 100;
+  const progress = ((gameData.question_number || 1) / (gameData.max_questions || 10)) * 100;
 
   return (
     <div className="min-h-screen bg-[#09090b] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-grid opacity-30" />
       <div className="absolute inset-0 bg-gradient-radial" />
-      
-      {/* Mascot Background */}
-      <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-5 pointer-events-none"
-        style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1654910971111-836ac0c213ae?crop=entropy&cs=srgb&fm=jpg&q=85)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          mixBlendMode: 'screen'
-        }}
-      />
 
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between p-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#00f0ff]/20 flex items-center justify-center neon-border">
-            <Brain className="w-6 h-6 text-[#00f0ff]" />
+            <Stethoscope className="w-6 h-6 text-[#00f0ff]" />
           </div>
           <div>
             <span className="text-white/50 text-xs font-mono uppercase tracking-wider">
-              {gameData.specialty?.name || 'Diagnosis'}
+              {gameData.specialty || 'Diagnosis'}
             </span>
             <p className="text-white font-['Rajdhani'] font-bold">
-              Question {gameData.question_number} of {gameData.total_questions}
+              Question {gameData.question_number} of {gameData.max_questions || 10}
             </p>
           </div>
         </div>
@@ -166,12 +141,31 @@ export default function GamePlay() {
         </div>
       </div>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-6 py-12">
+      <main className="relative z-10 max-w-4xl mx-auto px-6 py-8">
+        {/* Patient Presentation Card */}
+        {gameData.initial_presentation && gameData.question_number === 1 && (
+          <Card className="glass-card p-6 mb-6 animate-slide-up">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#7d00ff]/20 flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 text-[#7d00ff]" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-2">
+                  Patient Presentation
+                </h3>
+                <p className="text-white/70 leading-relaxed">
+                  {gameData.initial_presentation}
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Question Card */}
         <Card className="glass p-8 md:p-12 mb-8 animate-scale-in">
           <div className="text-center">
             <div className="w-20 h-20 rounded-full bg-[#00f0ff]/10 flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
-              <Brain className="w-10 h-10 text-[#00f0ff]" />
+              <Stethoscope className="w-10 h-10 text-[#00f0ff]" />
             </div>
             
             <h2 className="text-2xl md:text-3xl font-bold text-white font-['Rajdhani'] mb-4" data-testid="question-text">
@@ -220,7 +214,7 @@ export default function GamePlay() {
                   <div className="flex items-start gap-3">
                     <Lightbulb className="w-5 h-5 text-[#ffb700] flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-[#ffb700] text-sm font-semibold mb-1">AI Hint</p>
+                      <p className="text-[#ffb700] text-sm font-semibold mb-1">Hint</p>
                       <p className="text-white/70 text-sm">{hint}</p>
                     </div>
                   </div>
@@ -241,7 +235,7 @@ export default function GamePlay() {
                   ) : (
                     <>
                       <Lightbulb className="w-4 h-4 mr-2" />
-                      Get AI Hint
+                      Get Hint
                     </>
                   )}
                 </Button>
@@ -254,7 +248,7 @@ export default function GamePlay() {
         {topCandidates.length > 0 && (
           <Card className="glass-card p-6 animate-slide-up">
             <h3 className="text-white/50 text-xs font-mono uppercase tracking-wider mb-4">
-              Top Candidates
+              Differential Diagnosis
             </h3>
             <div className="space-y-3">
               {topCandidates.map((candidate, index) => (
