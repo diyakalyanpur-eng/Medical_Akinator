@@ -32,9 +32,6 @@ class MedicalAkinatorAPITester:
         
         if headers:
             test_headers.update(headers)
-            
-        if self.token and 'Authorization' not in test_headers:
-            test_headers['Authorization'] = f'Bearer {self.token}'
 
         self.tests_run += 1
         self.log(f"Testing {name}...")
