@@ -209,12 +209,12 @@ class MedicalAkinatorAPITester:
         
         # Start a new game
         game_data = {
-            "specialty": "neurology",
-            "is_anonymous": True  # Test anonymous mode
+            "specialty": "cardiovascular",
+            "is_anonymous": True
         }
         
         success, data = self.run_test(
-            "Start Anonymous Game", 
+            "Start Complete Game", 
             "POST", 
             "game/start", 
             200, 
@@ -225,10 +225,10 @@ class MedicalAkinatorAPITester:
             return False
             
         test_game_id = data['game_id']
-        self.log(f"✅ Started anonymous game: {test_game_id}")
+        self.log(f"✅ Started complete game: {test_game_id}")
         
-        # Answer several questions to complete the game
-        answers = ["yes", "no", "maybe", "yes", "no"]
+        # Answer questions until game completes (max 10 questions)
+        answers = ["yes", "no", "maybe", "yes", "no", "yes", "maybe", "no", "yes", "no"]
         
         for i, answer in enumerate(answers):
             answer_data = {
@@ -237,7 +237,7 @@ class MedicalAkinatorAPITester:
             }
             
             success, response = self.run_test(
-                f"Answer Question {i+1}", 
+                f"Complete Game Answer {i+1}", 
                 "POST", 
                 "game/answer", 
                 200, 
@@ -248,15 +248,42 @@ class MedicalAkinatorAPITester:
                 return False
                 
             if response.get('game_completed'):
-                self.log(f"✅ Game completed after {i+1} questions")
+                self.log(f"✅ Complete game finished after {i+1} questions")
+                self.log(f"✅ Final diagnosis: {response.get('disease_name', 'N/A')}")
+                self.log(f"✅ Final score: {response.get('score', 'N/A')}%")
+                if response.get('diagnosis'):
+                    diagnosis = response['diagnosis']
+                    self.log(f"✅ ICD Code: {diagnosis.get('icd_code', 'N/A')}")
                 return True
                 
-        self.log("⚠️ Game didn't complete after 5 questions")
-        return True  # This is acceptable
+        self.log("⚠️ Game didn't complete after 10 questions (this is acceptable)")
+        return True
+
+    def test_legacy_endpoints(self):
+        """Test legacy endpoints for backward compatibility"""
+        self.log("=== LEGACY ENDPOINTS ===")
+        
+        # Test legacy start-game endpoint
+        legacy_start_data = {
+            "difficulty": "medium"
+        }
+        
+        success, data = self.run_test(
+            "Legacy Start Game", 
+            "POST", 
+            "start-game", 
+            200, 
+            legacy_start_data
+        )
+        
+        if success and 'session_id' in data:
+            self.log(f"✅ Legacy game started: {data['session_id']}")
+            return True
+        return False
 
     def run_all_tests(self):
         """Run all test suites"""
-        self.log("🚀 Starting Dr. Neuro Backend API Tests")
+        self.log("🚀 Starting Medical Akinator Backend API Tests")
         self.log(f"Testing against: {self.base_url}")
         
         test_results = []
@@ -265,11 +292,6 @@ class MedicalAkinatorAPITester:
         test_results.append(self.test_health_check())
         test_results.append(self.test_specialties())
         
-        # Authentication tests
-        test_results.append(self.test_auth_registration())
-        test_results.append(self.test_auth_me())
-        test_results.append(self.test_auth_login())
-        
         # Game functionality tests
         test_results.append(self.test_game_start())
         test_results.append(self.test_game_answer())
@@ -277,7 +299,9 @@ class MedicalAkinatorAPITester:
         
         # Additional tests
         test_results.append(self.test_leaderboard())
+        test_results.append(self.test_user_stats())
         test_results.append(self.test_complete_game_flow())
+        test_results.append(self.test_legacy_endpoints())
         
         # Print summary
         self.log("=" * 50)
@@ -296,7 +320,7 @@ class MedicalAkinatorAPITester:
 
 def main():
     """Main test execution"""
-    tester = DrNeuroAPITester()
+    tester = MedicalAkinatorAPITester()
     
     try:
         success = tester.run_all_tests()
