@@ -34,6 +34,7 @@ export default function Game() {
   const [searchParams] = useSearchParams();
   const [specialties, setSpecialties] = useState([]);
   const [selectedSpecialty, setSelectedSpecialty] = useState(searchParams.get('specialty') || null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState('medium');
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
 
@@ -45,7 +46,6 @@ export default function Game() {
     try {
       const response = await axios.get(`${API}/specialties`);
       setSpecialties(response.data);
-      // Auto-select if only one or if specialty in URL
       if (response.data.length === 1) {
         setSelectedSpecialty(response.data[0][0]);
       }
@@ -58,18 +58,24 @@ export default function Game() {
   };
 
   const startGame = async () => {
-    const specialtyToUse = selectedSpecialty || 'general';
-    
     setStarting(true);
     try {
-      const response = await axios.post(`${API}/game/start`, { 
-        specialty: specialtyToUse, 
-        is_anonymous: true 
+      // Use the original start-game endpoint
+      const response = await axios.post(`${API}/start-game`, { 
+        specialty: selectedSpecialty || 'general',
+        difficulty: selectedDifficulty
       });
 
-      navigate(`/play/${response.data.game_id}`, { 
-        state: { gameData: response.data } 
+      // Navigate with session_id as gameId
+      navigate(`/play/${response.data.session_id}`, { 
+        state: { 
+          gameData: {
+            ...response.data,
+            game_id: response.data.session_id
+          }
+        } 
       });
+
     } catch (error) {
       console.error('Error starting game:', error);
       toast.error(error.response?.data?.detail || 'Failed to start game');
@@ -102,12 +108,33 @@ export default function Game() {
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-8">
         <div className="text-center mb-12 animate-slide-up">
           <h1 className="text-4xl md:text-5xl font-bold text-white font-['Rajdhani'] tracking-tight uppercase mb-4">
-            Select <span className="text-gradient">Specialty</span>
+            New <span className="text-gradient">Diagnostic Case</span>
           </h1>
           <p className="text-white/50 max-w-xl mx-auto">
-            Choose a medical specialty to begin. Each specialty contains diseases with 
-            detailed patient presentations and symptom patterns.
+            You'll be presented with a patient case. Ask questions to gather information 
+            and submit your diagnosis when ready.
           </p>
+        </div>
+
+        {/* Difficulty Selection */}
+        <div className="mb-8">
+          <h3 className="text-white/50 text-sm font-mono uppercase tracking-wider mb-3">Difficulty</h3>
+          <div className="flex gap-3">
+            {['easy', 'medium', 'hard'].map((diff) => (
+              <Button
+                key={diff}
+                variant={selectedDifficulty === diff ? 'default' : 'outline'}
+                className={selectedDifficulty === diff 
+                  ? 'bg-[#7d00ff] text-white' 
+                  : 'border-white/20 text-white/70 hover:bg-white/5'
+                }
+                onClick={() => setSelectedDifficulty(diff)}
+                data-testid={`difficulty-${diff}`}
+              >
+                {diff.charAt(0).toUpperCase() + diff.slice(1)}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {/* Specialty Grid */}
@@ -125,50 +152,55 @@ export default function Game() {
             <p className="text-white/30 text-sm font-mono">Path: /app/backend/data/diseases.json</p>
           </Card>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-            {specialties.map(([key, specialty]) => {
-              const Icon = SPECIALTY_ICONS[key] || Activity;
-              const color = SPECIALTY_COLORS[key] || '#00f0ff';
-              const isSelected = selectedSpecialty === key;
-              
-              return (
-                <Card 
-                  key={key}
-                  className={`p-6 cursor-pointer transition-all duration-300 ${
-                    isSelected 
-                      ? 'bg-black/80 border-2' 
-                      : 'glass-card hover:bg-white/5'
-                  }`}
-                  style={{
-                    borderColor: isSelected ? color : 'rgba(255,255,255,0.1)',
-                    boxShadow: isSelected ? `0 0 30px -10px ${color}` : 'none'
-                  }}
-                  onClick={() => setSelectedSpecialty(key)}
-                  data-testid={`specialty-select-${key}`}
-                >
-                  <div 
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 ${isSelected ? 'scale-110' : ''}`}
-                    style={{ backgroundColor: `${color}20` }}
+          <>
+            <h3 className="text-white/50 text-sm font-mono uppercase tracking-wider mb-3">
+              Specialty (Optional)
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
+              {specialties.map(([key, specialty]) => {
+                const Icon = SPECIALTY_ICONS[key] || Activity;
+                const color = SPECIALTY_COLORS[key] || '#00f0ff';
+                const isSelected = selectedSpecialty === key;
+                
+                return (
+                  <Card 
+                    key={key}
+                    className={`p-6 cursor-pointer transition-all duration-300 ${
+                      isSelected 
+                        ? 'bg-black/80 border-2' 
+                        : 'glass-card hover:bg-white/5'
+                    }`}
+                    style={{
+                      borderColor: isSelected ? color : 'rgba(255,255,255,0.1)',
+                      boxShadow: isSelected ? `0 0 30px -10px ${color}` : 'none'
+                    }}
+                    onClick={() => setSelectedSpecialty(isSelected ? null : key)}
+                    data-testid={`specialty-select-${key}`}
                   >
-                    <Icon className="w-6 h-6" style={{ color }} />
-                  </div>
-                  <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-1">
-                    {specialty.name}
-                  </h3>
-                  <p className="text-white/40 text-sm">
-                    {specialty.disease_count} disease{specialty.disease_count !== 1 ? 's' : ''}
-                  </p>
-                  
-                  {isSelected && (
-                    <div className="mt-3 flex items-center text-xs font-mono" style={{ color }}>
-                      <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{ backgroundColor: color }} />
-                      Selected
+                    <div 
+                      className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 ${isSelected ? 'scale-110' : ''}`}
+                      style={{ backgroundColor: `${color}20` }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color }} />
                     </div>
-                  )}
-                </Card>
-              );
-            })}
-          </div>
+                    <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-1">
+                      {specialty.name}
+                    </h3>
+                    <p className="text-white/40 text-sm">
+                      {specialty.disease_count} disease{specialty.disease_count !== 1 ? 's' : ''}
+                    </p>
+                    
+                    {isSelected && (
+                      <div className="mt-3 flex items-center text-xs font-mono" style={{ color }}>
+                        <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{ backgroundColor: color }} />
+                        Selected
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {/* Start Game Panel */}
@@ -176,33 +208,25 @@ export default function Game() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
               <h2 className="text-2xl font-bold text-white font-['Rajdhani'] mb-2">
-                {selectedSpecialtyData ? (
-                  <>Ready to diagnose in <span style={{ color: SPECIALTY_COLORS[selectedSpecialty] || '#00f0ff' }}>{selectedSpecialtyData.name}</span>?</>
-                ) : specialties.length > 0 ? (
-                  'Select a specialty or start with random'
-                ) : (
-                  'Add diseases.json to begin'
-                )}
+                Ready to diagnose?
               </h2>
               <p className="text-white/50">
-                {specialties.length > 0 
-                  ? 'A random disease will be selected. Answer up to 10 questions to reach the diagnosis.'
-                  : 'No diseases available in the database'
-                }
+                A random patient case will be presented. Ask questions to gather clinical 
+                information and submit your diagnosis when confident.
               </p>
               
               <div className="mt-4 flex flex-wrap gap-4 text-sm">
                 <div className="flex items-center gap-2 text-white/40">
                   <div className="w-2 h-2 rounded-full bg-[#00f0ff]" />
-                  <span className="font-mono">Max 10 Questions</span>
+                  <span className="font-mono">Ask Questions</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/40">
                   <div className="w-2 h-2 rounded-full bg-[#7d00ff]" />
-                  <span className="font-mono">Patient Context</span>
+                  <span className="font-mono">Build Differential</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/40">
                   <div className="w-2 h-2 rounded-full bg-[#00ff9d]" />
-                  <span className="font-mono">Teaching Points</span>
+                  <span className="font-mono">Submit Diagnosis</span>
                 </div>
               </div>
             </div>
@@ -221,7 +245,7 @@ export default function Game() {
               ) : (
                 <>
                   <Play className="w-5 h-5 mr-2" />
-                  Start Game
+                  Start Case
                 </>
               )}
             </Button>

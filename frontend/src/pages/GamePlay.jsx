@@ -1,85 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { Stethoscope, Lightbulb, Loader2, HelpCircle, X, Check, Minus, User } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { Stethoscope, Send, Loader2, User, MessageSquare, Target, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ANSWER_OPTIONS = [
-  { value: 'yes', label: 'Yes', icon: Check, color: '#00ff9d' },
-  { value: 'no', label: 'No', icon: X, color: '#ff0055' },
-  { value: 'maybe', label: 'Maybe', icon: Minus, color: '#ffb700' },
-  { value: 'dont_know', label: "Don't Know", icon: HelpCircle, color: '#7d00ff' }
-];
-
 export default function GamePlay() {
   const navigate = useNavigate();
   const { gameId } = useParams();
   const location = useLocation();
+  const messagesEndRef = useRef(null);
   
   const [gameData, setGameData] = useState(location.state?.gameData || null);
+  const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
-  const [hint, setHint] = useState(null);
-  const [loadingHint, setLoadingHint] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [topCandidates, setTopCandidates] = useState([]);
+  const [submittingDiagnosis, setSubmittingDiagnosis] = useState(false);
+  const [conversation, setConversation] = useState([]);
+  const [differential, setDifferential] = useState([]);
+  const [showDiagnosisInput, setShowDiagnosisInput] = useState(false);
+  const [diagnosisGuess, setDiagnosisGuess] = useState('');
 
   useEffect(() => {
     if (!gameData) {
       navigate('/game');
+    } else {
+      // Add initial presentation to conversation
+      if (gameData.initial_presentation) {
+        setConversation([{
+          type: 'system',
+          content: gameData.initial_presentation
+        }]);
+      }
     }
   }, [gameData, navigate]);
 
-  const submitAnswer = async (answer) => {
-    setSelectedAnswer(answer);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [conversation]);
+
+  const askQuestion = async (e) => {
+    e.preventDefault();
+    if (!question.trim() || loading) return;
+
+    const userQuestion = question.trim();
+    setQuestion('');
     setLoading(true);
-    setHint(null);
+
+    // Add user question to conversation
+    setConversation(prev => [...prev, {
+      type: 'user',
+      content: userQuestion
+    }]);
 
     try {
-      const response = await axios.post(`${API}/game/answer`, { 
-        game_id: gameId, 
-        answer 
+      const response = await axios.post(`${API}/ask-question`, {
+        session_id: gameId,
+        question: userQuestion
       });
 
-      if (response.data.game_completed) {
-        navigate(`/results/${gameId}`, { 
-          state: { 
-            result: response.data, 
-            specialty: gameData.specialty
-          } 
-        });
-      } else {
-        setGameData(prev => ({
-          ...prev,
-          question_number: response.data.question_number,
-          question: response.data.question,
-          symptom_key: response.data.symptom_key
-        }));
-        setTopCandidates(response.data.top_candidates || []);
-        setSelectedAnswer(null);
+      // Add answer to conversation
+      setConversation(prev => [...prev, {
+        type: 'answer',
+        content: response.data.answer,
+        explanation: response.data.explanation
+      }]);
+
+      // Update differential if provided
+      if (response.data.differential_diagnosis?.length > 0) {
+        setDifferential(response.data.differential_diagnosis);
       }
+
     } catch (error) {
-      console.error('Error submitting answer:', error);
-      toast.error(error.response?.data?.detail || 'Failed to submit answer');
+      console.error('Error asking question:', error);
+      toast.error(error.response?.data?.detail || 'Failed to get answer');
+      // Remove the user question if error
+      setConversation(prev => prev.slice(0, -1));
     } finally {
       setLoading(false);
     }
   };
 
-  const getHint = async () => {
-    setLoadingHint(true);
+  const submitDiagnosis = async (e) => {
+    e.preventDefault();
+    if (!diagnosisGuess.trim() || submittingDiagnosis) return;
+
+    setSubmittingDiagnosis(true);
+
     try {
-      const response = await axios.post(`${API}/game/hint`, { game_id: gameId });
-      setHint(response.data.hint);
+      const response = await axios.post(`${API}/submit-diagnosis`, {
+        session_id: gameId,
+        diagnosis: diagnosisGuess.trim()
+      });
+
+      // Navigate to results
+      navigate(`/results/${gameId}`, {
+        state: {
+          result: response.data,
+          questionsAsked: conversation.filter(c => c.type === 'user').length
+        }
+      });
+
     } catch (error) {
-      console.error('Error getting hint:', error);
-      toast.error('Failed to get hint');
+      console.error('Error submitting diagnosis:', error);
+      toast.error(error.response?.data?.detail || 'Failed to submit diagnosis');
     } finally {
-      setLoadingHint(false);
+      setSubmittingDiagnosis(false);
     }
   };
 
@@ -91,197 +121,244 @@ export default function GamePlay() {
     );
   }
 
-  const progress = ((gameData.question_number || 1) / (gameData.max_questions || 10)) * 100;
+  const questionsAsked = conversation.filter(c => c.type === 'user').length;
 
   return (
-    <div className="min-h-screen bg-[#09090b] relative overflow-hidden">
+    <div className="min-h-screen bg-[#09090b] relative overflow-hidden flex flex-col">
       {/* Background */}
       <div className="absolute inset-0 bg-grid opacity-30" />
       <div className="absolute inset-0 bg-gradient-radial" />
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between p-6">
+      <header className="relative z-10 flex items-center justify-between p-4 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#00f0ff]/20 flex items-center justify-center neon-border">
             <Stethoscope className="w-6 h-6 text-[#00f0ff]" />
           </div>
           <div>
             <span className="text-white/50 text-xs font-mono uppercase tracking-wider">
-              {gameData.specialty || 'Diagnosis'}
+              Diagnostic Session
             </span>
             <p className="text-white font-['Rajdhani'] font-bold">
-              Question {gameData.question_number} of {gameData.max_questions || 10}
+              {questionsAsked} Questions Asked
             </p>
           </div>
         </div>
         
-        <Button
-          variant="ghost"
-          className="text-white/50 hover:text-white hover:bg-white/5"
-          onClick={() => {
-            if (window.confirm('Are you sure you want to exit? Your progress will be lost.')) {
-              navigate('/game');
-            }
-          }}
-          data-testid="exit-game-btn"
-        >
-          Exit Game
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            className="bg-[#00ff9d] text-black font-bold hover:bg-[#00ff9d]/90"
+            onClick={() => setShowDiagnosisInput(true)}
+            data-testid="submit-diagnosis-btn"
+          >
+            <Target className="w-4 h-4 mr-2" />
+            Submit Diagnosis
+          </Button>
+          <Button
+            variant="ghost"
+            className="text-white/50 hover:text-white hover:bg-white/5"
+            onClick={() => {
+              if (window.confirm('Are you sure you want to exit? Your progress will be lost.')) {
+                navigate('/game');
+              }
+            }}
+            data-testid="exit-game-btn"
+          >
+            Exit
+          </Button>
+        </div>
       </header>
 
-      {/* Progress Bar */}
-      <div className="relative z-10 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="h-2 bg-[#18181b] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-[#00f0ff] to-[#7d00ff] transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
+      {/* Main Content */}
+      <div className="relative z-10 flex-1 flex overflow-hidden">
+        {/* Conversation Panel */}
+        <div className="flex-1 flex flex-col">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            {conversation.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+              >
+                {msg.type === 'system' && (
+                  <Card className="glass-card p-4 max-w-2xl">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#7d00ff]/20 flex items-center justify-center flex-shrink-0">
+                        <User className="w-5 h-5 text-[#7d00ff]" />
+                      </div>
+                      <div>
+                        <p className="text-[#7d00ff] text-sm font-semibold mb-1">Patient Presentation</p>
+                        <p className="text-white/80 leading-relaxed">{msg.content}</p>
+                      </div>
+                    </div>
+                  </Card>
+                )}
+                
+                {msg.type === 'user' && (
+                  <Card className="bg-[#00f0ff]/10 border-[#00f0ff]/30 p-4 max-w-xl">
+                    <div className="flex items-start gap-3">
+                      <div>
+                        <p className="text-[#00f0ff] text-sm font-semibold mb-1">Your Question</p>
+                        <p className="text-white/90">{msg.content}</p>
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-[#00f0ff]/20 flex items-center justify-center flex-shrink-0">
+                        <MessageSquare className="w-4 h-4 text-[#00f0ff]" />
+                      </div>
+                    </div>
+                  </Card>
+                )}
+                
+                {msg.type === 'answer' && (
+                  <Card className="glass p-4 max-w-2xl">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#00ff9d]/20 flex items-center justify-center flex-shrink-0">
+                        <Stethoscope className="w-5 h-5 text-[#00ff9d]" />
+                      </div>
+                      <div>
+                        <p className="text-[#00ff9d] text-sm font-semibold mb-1">Answer</p>
+                        <p className="text-white font-medium text-lg mb-2">{msg.content}</p>
+                        {msg.explanation && (
+                          <p className="text-white/60 text-sm">{msg.explanation}</p>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                )}
+              </div>
+            ))}
+            
+            {loading && (
+              <div className="flex justify-start animate-fade-in">
+                <Card className="glass p-4">
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="w-5 h-5 text-[#00f0ff] animate-spin" />
+                    <span className="text-white/50">Analyzing patient data...</span>
+                  </div>
+                </Card>
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Question Input */}
+          <div className="p-4 border-t border-white/10">
+            <form onSubmit={askQuestion} className="flex gap-3">
+              <Input
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Ask a question... (e.g., 'Does the patient have fever?', 'What are the vital signs?')"
+                className="flex-1 bg-[#18181b]/50 border-white/10 text-white placeholder:text-white/30 h-12"
+                disabled={loading}
+                data-testid="question-input"
+              />
+              <Button
+                type="submit"
+                className="bg-[#00f0ff] text-black font-bold px-6 hover:bg-[#00f0ff]/90"
+                disabled={loading || !question.trim()}
+                data-testid="send-question-btn"
+              >
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+              </Button>
+            </form>
+            
+            {/* Suggested Questions */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="text-white/30 text-xs">Suggestions:</span>
+              {[
+                "Does the patient have fever?",
+                "What are the vital signs?",
+                "When did symptoms start?",
+                "Any relevant medical history?"
+              ].map((suggestion, i) => (
+                <button
+                  key={i}
+                  className="text-xs px-2 py-1 rounded bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70 transition-colors"
+                  onClick={() => setQuestion(suggestion)}
+                  type="button"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-6 py-8">
-        {/* Patient Presentation Card */}
-        {gameData.initial_presentation && gameData.question_number === 1 && (
-          <Card className="glass-card p-6 mb-6 animate-slide-up">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#7d00ff]/20 flex items-center justify-center flex-shrink-0">
-                <User className="w-6 h-6 text-[#7d00ff]" />
-              </div>
-              <div>
-                <h3 className="text-white font-semibold font-['Rajdhani'] text-lg mb-2">
-                  Patient Presentation
-                </h3>
-                <p className="text-white/70 leading-relaxed">
-                  {gameData.initial_presentation}
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Question Card */}
-        <Card className="glass p-8 md:p-12 mb-8 animate-scale-in">
-          <div className="text-center">
-            <div className="w-20 h-20 rounded-full bg-[#00f0ff]/10 flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
-              <Stethoscope className="w-10 h-10 text-[#00f0ff]" />
-            </div>
-            
-            <h2 className="text-2xl md:text-3xl font-bold text-white font-['Rajdhani'] mb-4" data-testid="question-text">
-              {gameData.question}
-            </h2>
-            
-            <p className="text-white/40 text-sm font-mono mb-8">
-              Symptom: {gameData.symptom_key?.replace(/_/g, ' ')}
-            </p>
-
-            {/* Answer Buttons */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              {ANSWER_OPTIONS.map((option) => {
-                const Icon = option.icon;
-                const isSelected = selectedAnswer === option.value;
-                
-                return (
-                  <Button
-                    key={option.value}
-                    className={`h-20 flex flex-col items-center justify-center gap-2 transition-all duration-300 ${
-                      isSelected 
-                        ? 'scale-105' 
-                        : 'bg-[#18181b] hover:bg-white/10'
-                    }`}
-                    style={{
-                      backgroundColor: isSelected ? `${option.color}20` : undefined,
-                      borderColor: isSelected ? option.color : 'rgba(255,255,255,0.1)',
-                      borderWidth: isSelected ? '2px' : '1px',
-                      boxShadow: isSelected ? `0 0 20px -5px ${option.color}` : 'none'
-                    }}
-                    disabled={loading}
-                    onClick={() => submitAnswer(option.value)}
-                    data-testid={`answer-${option.value}`}
-                  >
-                    <Icon className="w-6 h-6" style={{ color: option.color }} />
-                    <span className="text-white font-semibold">{option.label}</span>
-                  </Button>
-                );
-              })}
-            </div>
-
-            {/* Hint Section */}
-            <div className="border-t border-white/10 pt-6">
-              {hint ? (
-                <div className="glass-card p-4 rounded-lg text-left animate-fade-in">
-                  <div className="flex items-start gap-3">
-                    <Lightbulb className="w-5 h-5 text-[#ffb700] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-[#ffb700] text-sm font-semibold mb-1">Hint</p>
-                      <p className="text-white/70 text-sm">{hint}</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <Button
-                  variant="ghost"
-                  className="text-white/50 hover:text-[#ffb700] hover:bg-[#ffb700]/10"
-                  onClick={getHint}
-                  disabled={loadingHint}
-                  data-testid="get-hint-btn"
-                >
-                  {loadingHint ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Getting hint...
-                    </>
-                  ) : (
-                    <>
-                      <Lightbulb className="w-4 h-4 mr-2" />
-                      Get Hint
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-        </Card>
-
-        {/* Top Candidates */}
-        {topCandidates.length > 0 && (
-          <Card className="glass-card p-6 animate-slide-up">
-            <h3 className="text-white/50 text-xs font-mono uppercase tracking-wider mb-4">
+        {/* Differential Diagnosis Panel */}
+        {differential.length > 0 && (
+          <div className="w-80 border-l border-white/10 p-4 overflow-y-auto hidden lg:block">
+            <h3 className="text-white/50 text-xs font-mono uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4" />
               Differential Diagnosis
             </h3>
             <div className="space-y-3">
-              {topCandidates.map((candidate, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <span className="text-white font-medium">{candidate.name}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-[#18181b] rounded-full overflow-hidden">
-                      <div 
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ 
-                          width: `${candidate.probability}%`,
-                          backgroundColor: index === 0 ? '#00ff9d' : index === 1 ? '#00f0ff' : '#7d00ff'
-                        }}
-                      />
-                    </div>
-                    <span className="text-white/50 text-sm font-mono w-12 text-right">
-                      {candidate.probability}%
-                    </span>
-                  </div>
-                </div>
+              {differential.map((item, index) => (
+                <Card key={index} className="glass-card p-3">
+                  <p className="text-white font-medium text-sm">{item.disease}</p>
+                  <p className="text-white/40 text-xs mt-1">{item.likelihood}</p>
+                  {item.reasoning && (
+                    <p className="text-white/50 text-xs mt-2">{item.reasoning}</p>
+                  )}
+                </Card>
               ))}
             </div>
-          </Card>
-        )}
-      </main>
-
-      {/* Loading Overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass p-8 rounded-2xl text-center">
-            <Loader2 className="w-12 h-12 text-[#00f0ff] animate-spin mx-auto mb-4" />
-            <p className="text-white font-['Rajdhani'] text-lg">Analyzing response...</p>
           </div>
+        )}
+      </div>
+
+      {/* Diagnosis Modal */}
+      {showDiagnosisInput && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="glass p-8 max-w-md w-full animate-scale-in">
+            <h2 className="text-2xl font-bold text-white font-['Rajdhani'] mb-2">
+              Submit Your Diagnosis
+            </h2>
+            <p className="text-white/50 mb-6">
+              Based on your findings, what is your diagnosis?
+            </p>
+            
+            <form onSubmit={submitDiagnosis}>
+              <Input
+                value={diagnosisGuess}
+                onChange={(e) => setDiagnosisGuess(e.target.value)}
+                placeholder="Enter disease name (e.g., Pneumonia, Influenza)"
+                className="bg-[#18181b]/50 border-white/10 text-white placeholder:text-white/30 h-12 mb-4"
+                autoFocus
+                data-testid="diagnosis-input"
+              />
+              
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 border-white/20 text-white hover:bg-white/5"
+                  onClick={() => setShowDiagnosisInput(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="flex-1 bg-[#00ff9d] text-black font-bold hover:bg-[#00ff9d]/90"
+                  disabled={!diagnosisGuess.trim() || submittingDiagnosis}
+                  data-testid="confirm-diagnosis-btn"
+                >
+                  {submittingDiagnosis ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    'Submit'
+                  )}
+                </Button>
+              </div>
+            </form>
+            
+            <p className="text-white/30 text-xs mt-4 text-center">
+              Questions asked: {questionsAsked}
+            </p>
+          </Card>
         </div>
       )}
     </div>
