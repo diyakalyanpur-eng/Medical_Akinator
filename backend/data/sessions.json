@@ -1594,5 +1594,288 @@
       "setting": "emergency_department"
     },
     "created_at": 1767001265.0293603
+  },
+  "f423ec65-41cc-4333-9c28-b5e1f08890b8": {
+    "session_id": "f423ec65-41cc-4333-9c28-b5e1f08890b8",
+    "disease_name": "Respiratory Failure",
+    "disease_data": {
+      "id": "j96_001",
+      "icd10_code": "J96",
+      "name": "Respiratory Failure",
+      "category": "Respiratory/Critical Care",
+      "difficulty": "hard",
+      "initial_presentation": {
+        "chief_complaint": "severe difficulty breathing",
+        "setting": "emergency_department or ICU",
+        "patient_demographics": {
+          "age_range": "any age",
+          "sex": "equal",
+          "appearance": "critically ill, altered mental status, cyanotic"
+        }
+      },
+      "history": {
+        "symptom_onset": {
+          "timing": "acute or chronic with acute decompensation",
+          "mode": "variable - sudden or progressive",
+          "progression": "rapidly worsening respiratory status"
+        },
+        "primary_symptoms": {
+          "severe_dyspnea": "yes",
+          "tachypnea_or_bradypnea": "yes",
+          "altered_mental_status": "yes, from hypoxia or hypercapnia",
+          "inability_to_speak": "sometimes",
+          "cyanosis": "yes"
+        },
+        "precipitating_factors": {
+          "pneumonia": "yes",
+          "copd_exacerbation": "yes",
+          "pulmonary_edema": "yes",
+          "asthma_status_asthmaticus": "yes",
+          "pulmonary_embolism": "yes",
+          "sepsis": "yes",
+          "drug_overdose": "opioids, sedatives",
+          "neuromuscular_disease": "myasthenia, GBS",
+          "trauma": "chest trauma, flail chest"
+        },
+        "past_medical_history": {
+          "chronic_lung_disease": "COPD, ILD",
+          "heart_disease": "CHF",
+          "neuromuscular_disease": "ALS, muscular dystrophy",
+          "obesity_hypoventilation": "sometimes"
+        },
+        "medications": [
+          "home_oxygen",
+          "inhalers",
+          "diuretics",
+          "varies by underlying condition"
+        ],
+        "social_history": {
+          "smoking": "often",
+          "home_ventilator": "sometimes"
+        },
+        "family_history": {
+          "variable": "depends on underlying cause"
+        }
+      },
+      "physical_exam": {
+        "vital_signs": {
+          "blood_pressure": "variable - hypotensive if shock",
+          "heart_rate": "tachycardic >120 or bradycardic if near arrest",
+          "respiratory_rate": ">30 or <8, paradoxical respiration",
+          "temperature": "variable",
+          "oxygen_saturation": "<90% on high-flow oxygen"
+        },
+        "general": "severe distress, altered mental status, obtunded, cyanotic, diaphoretic",
+        "respiratory": {
+          "inspection": "accessory muscle use, paradoxical breathing, chest-abdominal dyssynchrony",
+          "auscultation": "variable - absent breath sounds, crackles, wheezing, or decreased air entry"
+        },
+        "cardiovascular": {
+          "inspection": "JVD variable",
+          "auscultation": "tachycardic or irregular"
+        },
+        "neurological": "confusion, somnolence, asterixis (CO2 retention), coma"
+      },
+      "diagnostic_tests": {
+        "must_order_for_diagnosis": [
+          "abg",
+          "chest_xray"
+        ],
+        "available_tests": {
+          "arterial_blood_gas": {
+            "cost_points": 2,
+            "time_minutes": 15,
+            "result": "Type I: PaO2 <60, normal/low CO2. Type II: PaO2 <60, PaCO2 >50",
+            "interpretation": "Defines type and severity of respiratory failure"
+          },
+          "chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 10,
+            "result": "variable - infiltrates, effusions, pneumothorax, hyperinflation",
+            "interpretation": "Identifies underlying cause"
+          },
+          "venous_blood_gas": {
+            "cost_points": 1,
+            "time_minutes": 10,
+            "result": "elevated CO2 suggests hypercapnia",
+            "interpretation": "Screening, less invasive than ABG"
+          },
+          "ecg": {
+            "cost_points": 1,
+            "time_minutes": 5,
+            "result": "may show arrhythmia, ischemia, RV strain",
+            "interpretation": "Identifies cardiac causes or complications"
+          },
+          "bnp": {
+            "cost_points": 3,
+            "time_minutes": 30,
+            "result": "elevated if cardiogenic",
+            "interpretation": "Distinguishes cardiac vs respiratory"
+          },
+          "d_dimer": {
+            "cost_points": 2,
+            "time_minutes": 45,
+            "result": "elevated if PE",
+            "interpretation": "Screens for pulmonary embolism"
+          },
+          "ct_angiography": {
+            "cost_points": 6,
+            "time_minutes": 45,
+            "result": "identifies PE, pneumonia, other pathology",
+            "interpretation": "Definitive imaging for PE"
+          },
+          "lactate": {
+            "cost_points": 1,
+            "time_minutes": 15,
+            "result": "elevated if tissue hypoxia",
+            "interpretation": "Severity marker, tissue perfusion"
+          }
+        }
+      },
+      "differential_diagnosis": {
+        "early_differential": [
+          "Type I respiratory failure (hypoxemic)",
+          "Type II respiratory failure (hypercapnic)",
+          "Mixed respiratory failure",
+          "Cardiogenic shock",
+          "Septic shock"
+        ],
+        "discriminating_features": {
+          "Type I (hypoxemic)": [
+            "PaO2 <60",
+            "normal or low CO2",
+            "causes: pneumonia, PE, ARDS, pulmonary edema"
+          ],
+          "Type II (hypercapnic)": [
+            "PaO2 <60",
+            "PaCO2 >50",
+            "causes: COPD, neuromuscular disease, obesity hypoventilation, drug overdose"
+          ],
+          "Cardiogenic shock": [
+            "elevated BNP",
+            "pulmonary edema",
+            "hypotension",
+            "poor cardiac output"
+          ],
+          "Septic shock": [
+            "fever",
+            "hypotension",
+            "elevated lactate",
+            "source of infection"
+          ],
+          "Pulmonary embolism": [
+            "sudden onset",
+            "pleuritic pain",
+            "DVT risk factors",
+            "elevated D-dimer"
+          ]
+        }
+      },
+      "scoring_criteria": {
+        "essential_questions": [
+          "underlying lung disease",
+          "precipitating event",
+          "progression of symptoms",
+          "drug or toxin exposure",
+          "baseline respiratory status"
+        ],
+        "essential_exams": [
+          "vital signs",
+          "mental status",
+          "respiratory effort and pattern",
+          "cyanosis",
+          "cardiovascular examination"
+        ],
+        "essential_tests": [
+          "ABG",
+          "chest_xray",
+          "ECG",
+          "lactate"
+        ],
+        "optimal_question_count": 10,
+        "optimal_test_count": 4
+      },
+      "teaching_points": [
+        "Type I (hypoxemic): failure of oxygenation, treat with supplemental O2, PEEP",
+        "Type II (hypercapnic): failure of ventilation, treat underlying cause, may need mechanical ventilation",
+        "Acute on chronic: baseline elevated CO2, look for metabolic compensation (elevated HCO3)",
+        "Indications for intubation: inability to protect airway, PaO2 <50 despite O2, PaCO2 >60 with pH <7.25",
+        "Non-invasive ventilation (BiPAP) can prevent intubation in COPD and CHF"
+      ],
+      "key_features": [
+        "Severe dyspnea with altered mental status",
+        "PaO2 <60 mmHg on ABG",
+        "Type I: normal/low CO2; Type II: elevated CO2",
+        "Cyanosis and respiratory distress",
+        "Underlying precipitating cause identified"
+      ],
+      "related_conditions": [
+        "COPD exacerbation",
+        "ARDS",
+        "Pneumonia",
+        "Pulmonary embolism",
+        "Neuromuscular disease"
+      ]
+    },
+    "questions_asked": [
+      {
+        "question": "Does the patient have fever?",
+        "answer": "NO - not a typical feature",
+        "explanation": "This symptom is not typically associated with this presentation."
+      },
+      {
+        "question": "What are the vital signs?",
+        "answer": "Blood Pressure: variable - hypotensive if shock; Heart Rate: tachycardic >120 or bradycardic if near arrest; Respiratory Rate: >30 or <8, paradoxical respiration; Temperature: variable; Oxygen Saturation: <90% on high-flow oxygen",
+        "explanation": "These are the patient's vital signs."
+      },
+      {
+        "question": "When did symptoms start?",
+        "answer": "acute or chronic with acute decompensation, variable - sudden or progressive onset",
+        "explanation": "Symptoms began acute or chronic with acute decompensation with variable - sudden or progressive onset. The symptoms are rapidly worsening respiratory status."
+      }
+    ],
+    "differential_diagnosis": [
+      {
+        "disease": "Type I respiratory failure (hypoxemic)",
+        "likelihood": "high probability",
+        "reasoning": "Based on clinical findings"
+      },
+      {
+        "disease": "Type II respiratory failure (hypercapnic)",
+        "likelihood": "moderate probability",
+        "reasoning": "Based on clinical findings"
+      },
+      {
+        "disease": "Mixed respiratory failure",
+        "likelihood": "lower probability",
+        "reasoning": "Based on clinical findings"
+      }
+    ],
+    "differential_history": [
+      [
+        {
+          "disease": "Type I respiratory failure (hypoxemic)",
+          "likelihood": "high probability",
+          "reasoning": "Based on clinical findings"
+        },
+        {
+          "disease": "Type II respiratory failure (hypercapnic)",
+          "likelihood": "moderate probability",
+          "reasoning": "Based on clinical findings"
+        },
+        {
+          "disease": "Mixed respiratory failure",
+          "likelihood": "lower probability",
+          "reasoning": "Based on clinical findings"
+        }
+      ]
+    ],
+    "patient_presentation": {
+      "text": "A 35-year-old M patient presents to emergency department or ICU with severe difficulty breathing. The patient critically ill, altered mental status, cyanotic.",
+      "age": "35",
+      "sex": "M",
+      "setting": "emergency_department or ICU"
+    },
+    "created_at": 1767001370.4480212
   }
 }
