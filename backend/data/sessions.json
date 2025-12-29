@@ -1594,5 +1594,242 @@
       "setting": "emergency_department"
     },
     "created_at": 1767001265.0293603
+  },
+  "1da3417f-6308-42b4-a94e-df67491404e0": {
+    "session_id": "1da3417f-6308-42b4-a94e-df67491404e0",
+    "disease_name": "Viral Pneumonia",
+    "disease_data": {
+      "id": "j12_001",
+      "icd10_code": "J12",
+      "name": "Viral Pneumonia",
+      "category": "Respiratory/Infectious",
+      "difficulty": "easy",
+      "initial_presentation": {
+        "chief_complaint": "cough and fever",
+        "setting": "outpatient_clinic or emergency_department",
+        "patient_demographics": {
+          "age_range": "any age, more severe in young children and elderly",
+          "sex": "equal",
+          "appearance": "appears ill but not toxic"
+        }
+      },
+      "history": {
+        "symptom_onset": {
+          "timing": "3-5 days",
+          "mode": "gradual, following viral URI",
+          "progression": "slowly progressive"
+        },
+        "primary_symptoms": {
+          "fever": "yes, but lower than bacterial (38-39\u00b0C)",
+          "cough": "yes, initially dry then may become productive",
+          "dyspnea": "yes, mild to moderate",
+          "myalgias": "yes, prominent",
+          "headache": "yes",
+          "fatigue": "yes, prominent"
+        },
+        "preceding_illness": {
+          "viral_uri": "yes, rhinorrhea, sore throat",
+          "duration": "3-7 days before pneumonia symptoms"
+        },
+        "associated_symptoms": {
+          "chest_discomfort": "sometimes",
+          "wheezing": "sometimes",
+          "sputum": "clear or white if present",
+          "gi_symptoms": "sometimes - nausea, diarrhea"
+        },
+        "epidemiology": {
+          "sick_contacts": "yes, household or community",
+          "seasonal": "influenza in winter, adenovirus year-round",
+          "immunocompromised": "CMV, varicella if immunosuppressed"
+        },
+        "past_medical_history": {
+          "asthma": "sometimes",
+          "copd": "sometimes",
+          "immunosuppression": "high risk for severe viral pneumonia",
+          "heart_disease": "sometimes"
+        },
+        "medications": [
+          "symptomatic treatment, antivirals if influenza"
+        ],
+        "social_history": {
+          "smoking": "variable",
+          "daycare_or_school": "viral exposure"
+        },
+        "family_history": {
+          "non_contributory": "yes"
+        }
+      },
+      "physical_exam": {
+        "vital_signs": {
+          "blood_pressure": "normal",
+          "heart_rate": "95-110",
+          "respiratory_rate": "20-26",
+          "temperature": "38-39\u00b0C (100.4-102.2\u00b0F)",
+          "oxygen_saturation": "92-96% on room air"
+        },
+        "general": "appears ill but not toxic, fatigued",
+        "respiratory": {
+          "inspection": "mildly increased work of breathing",
+          "palpation": "normal or mildly increased fremitus",
+          "percussion": "normal or dull if consolidation",
+          "auscultation": "scattered crackles or rhonchi, may have wheezes, bilateral and diffuse"
+        },
+        "cardiovascular": {
+          "auscultation": "tachycardic, regular"
+        },
+        "ent": "may have pharyngeal erythema, rhinorrhea"
+      },
+      "diagnostic_tests": {
+        "must_order_for_diagnosis": [
+          "chest_xray"
+        ],
+        "available_tests": {
+          "chest_xray": {
+            "cost_points": 3,
+            "time_minutes": 30,
+            "result": "bilateral interstitial infiltrates, patchy opacities, peribronchial thickening, no lobar consolidation",
+            "interpretation": "Atypical pattern distinguishes from bacterial"
+          },
+          "viral_pcr_panel": {
+            "cost_points": 4,
+            "time_minutes": 120,
+            "result": "positive for influenza, RSV, adenovirus, parainfluenza, rhinovirus, coronavirus",
+            "interpretation": "Identifies specific virus"
+          },
+          "rapid_influenza_test": {
+            "cost_points": 3,
+            "time_minutes": 15,
+            "result": "positive if influenza",
+            "interpretation": "Allows antiviral treatment within 48 hours"
+          },
+          "cbc": {
+            "cost_points": 1,
+            "time_minutes": 30,
+            "result": "normal or low WBC, lymphocytosis",
+            "interpretation": "Viral pattern (vs bacterial leukocytosis)"
+          },
+          "procalcitonin": {
+            "cost_points": 3,
+            "time_minutes": 45,
+            "result": "low <0.25 ng/mL",
+            "interpretation": "Suggests viral rather than bacterial"
+          },
+          "sputum_gram_stain": {
+            "cost_points": 1,
+            "time_minutes": 30,
+            "result": "few PMNs, few organisms",
+            "interpretation": "Non-specific, distinguishes from bacterial"
+          },
+          "pulse_oximetry": {
+            "cost_points": 0,
+            "time_minutes": 1,
+            "result": "variable",
+            "interpretation": "Guides oxygen therapy"
+          }
+        }
+      },
+      "differential_diagnosis": {
+        "early_differential": [
+          "Viral pneumonia",
+          "Bacterial pneumonia",
+          "Atypical pneumonia (Mycoplasma)",
+          "Bronchitis",
+          "COVID-19"
+        ],
+        "discriminating_features": {
+          "Viral pneumonia": [
+            "gradual onset",
+            "lower fever",
+            "myalgias prominent",
+            "interstitial pattern",
+            "low procalcitonin"
+          ],
+          "Bacterial pneumonia": [
+            "abrupt onset",
+            "high fever",
+            "rigors",
+            "lobar consolidation",
+            "elevated procalcitonin"
+          ],
+          "Atypical pneumonia": [
+            "gradual onset",
+            "dry cough",
+            "headache",
+            "bullous myringitis",
+            "cold agglutinins"
+          ],
+          "Bronchitis": [
+            "no infiltrate on CXR",
+            "clear lungs",
+            "normal oxygen saturation"
+          ],
+          "COVID-19": [
+            "loss of taste/smell",
+            "year-round",
+            "positive COVID test",
+            "ground glass on CT"
+          ]
+        }
+      },
+      "scoring_criteria": {
+        "essential_questions": [
+          "gradual onset with viral prodrome",
+          "fever pattern",
+          "myalgias and fatigue",
+          "sick contacts",
+          "immunosuppression"
+        ],
+        "essential_exams": [
+          "vital signs",
+          "respiratory examination",
+          "oxygen saturation",
+          "overall toxicity assessment"
+        ],
+        "essential_tests": [
+          "chest_xray",
+          "viral_testing if will change management",
+          "procalcitonin if considering antibiotics"
+        ],
+        "optimal_question_count": 10,
+        "optimal_test_count": 2
+      },
+      "teaching_points": [
+        "Most common viruses: influenza, RSV, adenovirus, parainfluenza",
+        "Interstitial (atypical) pattern on CXR vs lobar consolidation in bacterial",
+        "Treatment: supportive care, oseltamivir if influenza within 48 hours",
+        "Antibiotics NOT indicated unless bacterial superinfection suspected",
+        "Complications: bacterial superinfection (especially S. pneumoniae, S. aureus)"
+      ],
+      "key_features": [
+        "Gradual onset following viral URI",
+        "Fever with prominent myalgias and fatigue",
+        "Bilateral interstitial infiltrates on chest X-ray",
+        "Low or normal WBC with lymphocytosis",
+        "Low procalcitonin"
+      ],
+      "related_conditions": [
+        "Influenza",
+        "Bacterial pneumonia",
+        "Bronchitis",
+        "COVID-19",
+        "Atypical pneumonia"
+      ]
+    },
+    "questions_asked": [
+      {
+        "question": "Does the patient have fever?",
+        "answer": "YES - yes, but lower than bacterial (38-39\u00b0C)",
+        "explanation": "The patient does have this symptom."
+      }
+    ],
+    "differential_diagnosis": [],
+    "differential_history": [],
+    "patient_presentation": {
+      "text": "A 35-year-old M patient presents to outpatient clinic or emergency department with cough and fever. The patient appears ill but not toxic.",
+      "age": "35",
+      "sex": "M",
+      "setting": "outpatient_clinic or emergency_department"
+    },
+    "created_at": 1767001431.1455564
   }
 }
