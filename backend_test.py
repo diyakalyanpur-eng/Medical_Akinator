@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Dr. Neuro Backend API Testing Suite
-Tests all backend endpoints for the medical diagnosis game
+Medical Akinator Backend API Testing Suite
+Tests all backend endpoints for the Akinator-style medical diagnosis game
 """
 
 import requests
@@ -10,12 +10,10 @@ import json
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class DrNeuroAPITester:
+class MedicalAkinatorAPITester:
     def __init__(self, base_url="https://medic-akinator.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
-        self.token = None
-        self.user_id = None
         self.tests_run = 0
         self.tests_passed = 0
         self.failed_tests = []
