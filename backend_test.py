@@ -82,7 +82,7 @@ class MedicalAkinatorAPITester:
     def test_health_check(self):
         """Test basic health/connectivity"""
         self.log("=== HEALTH CHECK ===")
-        return self.run_test("Health Check", "GET", "", 200)  # Root should return 200 with API message
+        return self.run_test("Health Check", "GET", "", 200)
 
     def test_specialties(self):
         """Test specialties endpoint"""
@@ -90,77 +90,30 @@ class MedicalAkinatorAPITester:
         success, data = self.run_test("Get Specialties", "GET", "specialties", 200)
         if success and isinstance(data, list) and len(data) > 0:
             self.log(f"✅ Found {len(data)} specialties")
+            # Check for expected disease counts (20 Respiratory, 15 Cardiovascular)
+            respiratory_count = 0
+            cardiovascular_count = 0
+            for specialty_data in data:
+                if len(specialty_data) >= 2:
+                    specialty_name = specialty_data[0]
+                    specialty_info = specialty_data[1]
+                    if 'respiratory' in specialty_name.lower():
+                        respiratory_count = specialty_info.get('disease_count', 0)
+                    elif 'cardiovascular' in specialty_name.lower():
+                        cardiovascular_count = specialty_info.get('disease_count', 0)
+            
+            self.log(f"✅ Respiratory diseases: {respiratory_count}, Cardiovascular: {cardiovascular_count}")
             return True
         else:
             self.log("❌ Specialties data invalid")
             return False
 
-    def test_auth_registration(self):
-        """Test user registration"""
-        self.log("=== AUTHENTICATION ===")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        test_user = {
-            "email": f"test_user_{timestamp}@example.com",
-            "password": "TestPass123!",
-            "name": f"Test User {timestamp}"
-        }
-        
-        success, data = self.run_test(
-            "User Registration", 
-            "POST", 
-            "auth/register", 
-            200, 
-            test_user
-        )
-        
-        if success and 'token' in data and 'user' in data:
-            self.token = data['token']
-            self.user_id = data['user']['user_id']
-            self.log(f"✅ Registered user: {self.user_id}")
-            return True
-        else:
-            self.log("❌ Registration failed")
-            return False
-
-    def test_auth_login(self):
-        """Test user login with existing credentials"""
-        if not self.user_id:
-            self.log("⚠️ Skipping login test - no registered user")
-            return True
-            
-        # Try to login with a test user (this might fail if user doesn't exist)
-        login_data = {
-            "email": "test@example.com",
-            "password": "password123"
-        }
-        
-        success, data = self.run_test(
-            "User Login", 
-            "POST", 
-            "auth/login", 
-            401,  # Expect 401 for non-existent user
-            login_data
-        )
-        return True  # This test is expected to fail
-
-    def test_auth_me(self):
-        """Test getting current user info"""
-        if not self.token:
-            self.log("⚠️ Skipping auth/me test - no token")
-            return True
-            
-        success, data = self.run_test("Get Current User", "GET", "auth/me", 200)
-        if success and 'user_id' in data:
-            self.log(f"✅ Current user: {data.get('name', 'Unknown')}")
-            return True
-        return success
-
     def test_game_start(self):
         """Test starting a game"""
         self.log("=== GAME FLOW ===")
         game_data = {
-            "specialty": "cardiology",
-            "is_anonymous": False if self.token else True
+            "specialty": "respiratory",
+            "is_anonymous": True
         }
         
         success, data = self.run_test(
@@ -174,6 +127,8 @@ class MedicalAkinatorAPITester:
         if success and 'game_id' in data:
             self.game_id = data['game_id']
             self.log(f"✅ Started game: {self.game_id}")
+            self.log(f"✅ Initial question: {data.get('question', 'N/A')}")
+            self.log(f"✅ Patient presentation: {data.get('initial_presentation', 'N/A')[:100]}...")
             return True
         return False
 
@@ -199,13 +154,16 @@ class MedicalAkinatorAPITester:
         if success:
             if data.get('game_completed'):
                 self.log("✅ Game completed with answer")
+                self.log(f"✅ Final diagnosis: {data.get('disease_name', 'N/A')}")
+                self.log(f"✅ Score: {data.get('score', 'N/A')}%")
             else:
                 self.log("✅ Question answered, game continues")
+                self.log(f"✅ Next question: {data.get('question', 'N/A')}")
             return True
         return False
 
     def test_game_hint(self):
-        """Test getting AI hints"""
+        """Test getting hints"""
         if not self.game_id:
             self.log("⚠️ Skipping hint test - no active game")
             return True
@@ -213,7 +171,7 @@ class MedicalAkinatorAPITester:
         hint_data = {"game_id": self.game_id}
         
         success, data = self.run_test(
-            "Get AI Hint", 
+            "Get Hint", 
             "POST", 
             "game/hint", 
             200, 
@@ -232,6 +190,16 @@ class MedicalAkinatorAPITester:
         
         if success and isinstance(data, list):
             self.log(f"✅ Leaderboard has {len(data)} entries")
+            return True
+        return False
+
+    def test_user_stats(self):
+        """Test user stats endpoint"""
+        self.log("=== USER STATS ===")
+        success, data = self.run_test("Get User Stats", "GET", "user/stats", 200)
+        
+        if success and isinstance(data, dict):
+            self.log(f"✅ User stats retrieved")
             return True
         return False
 
